@@ -2,12 +2,14 @@
 
 SHELL := /bin/bash
 
-# Set compiler (use =c++17 if you have this availiable)
+# Set compiler (use =c++17 if you have this available)
 CC = g++ -std=c++11 
 
 # Paths to GSL library
-INC  = -I/mn/stornext/u3/hansw/winther/local/include
-LIBS = -L/mn/stornext/u3/hansw/winther/local/lib -lgsl -lgslcblas
+#INC  = -I/mn/stornext/u3/hansw/winther/local/include
+#LIBS = -L/mn/stornext/u3/hansw/winther/local/lib -lgsl -lgslcblas
+INC = -I/opt/homebrew/opt/gsl/include
+LIBS = -L/opt/homebrew/opt/gsl/lib -lgsl -lgslcblas
 
 #=======================================================
 # Options
@@ -17,7 +19,7 @@ OPTIONS =
 # Add bounds checking
 OPTIONS += -D_GLIBCXX_DEBUG
 
-# Show warnings if atempting to evaluate a spline out of bounds
+# Show warnings if attempting to evaluate a spline out of bounds
 OPTIONS += -D_SPLINE_WARNINGS_ON
 
 # Show info about the solution as we integrate
