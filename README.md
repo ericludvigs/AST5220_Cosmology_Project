@@ -1,22 +1,26 @@
 # Cosmology II
 ## The Cosmic Microwave Background and the Large Scale Structure of our Universe in theory and practice
 
-This repository contains C++ templates for making an Einstein-Boltzmann solver (a CAMB like code). This is used for the course AST5220 "Cosmology II" at ITA University of Oslo. The aim of this course is for students to learn both the theory, the physics and the numerics. We derive all the equations and discuss the physics in the lectures and then the students have to implement and solve them in a numerical code that will ultimately lead to matter and CMB power spectra. 
+This repository is for a specific solution to the numerical project in the course AST5220 "Cosmology II" at ITA University of Oslo. It is based on the C++ templates (and general repository) at [HAWinther/AST5220-Cosmology](https://github.com/HAWinther/AST5220-Cosmology).
 
-For the current version of the course C++ is the main language and you are strongly reccomended to use this as I can much more easily help you out and most of the course website only contains information for this C++ template. However you are free to do this project in any language you want (and you don't even have to use the template we provide if you don't want to), just be aware that I'm only good at C, C++, Fortran and Python so if you do it any other language you are on your own. See below for templates in other languages: 
+This project is for making an Einstein-Boltzmann solver (a CAMB like code). This code will ultimately lead to matter and CMB power spectra, after solving theoretical equations. 
+
+For the current version of the course C++ is the main language, this project focuses on the C++ code.
 
 # Fortran
 
-Templates for how to do this in Fortran (written by Hans Kristian Eriksen) can be found in the Fortran\_template directory together with PDFs outlining what to do for each milestone.
+Not using Fortran. PDFs outlining what to do for each milestone kept in Fortran folder.
 
 # Python?
 
-Every year there is someone who absolutely wants to do it in Python and very often it ends up not going so well (though some people manage to do it extremely well). I have therefore also included some simple templates for how you could do this in Python and you can find these in python\_template. However its strongly reccomended that you do not do this in Python even if that is what you know best. First of all its extremely useful to learn a more low level language which will make you a better human being and secondly the last two milestones are going to be super slow unless you really know what you are doing and how to speed up slow parts in Python (and is willing to spend time doing this). If you just naively implement things its likely going to take 10-20 minutes for a proper run of the full code (which will be very challenging to debug). Having said all that, this is not kindergarden so make your own choice.
+Simple templates for project with Python in `python_template`. Strongly recommended to not use Python though.
 
 # Website
 All relevant information about the project and the different milestones can be found on this [website](https://cmb.wintherscoming.no/).
 
 # Compiling
+
+TODO: Change instructions as changes are made
 
 Compile the code running [ make ]. If you want to compile this on your computer you need to install the [GSL library](ftp://ftp.gnu.org/gnu/gsl/) first. See below for instructions if you haven't installed a library lik this before.
 
