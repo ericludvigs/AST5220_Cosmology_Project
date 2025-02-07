@@ -162,7 +162,8 @@ namespace Utils{
     // to avoid any issues with this (these large values not very relevant for us anyway)
     if(x > 14000.0) return 0.0;
     
-    return std::sph_bessel(ell, x);
+    //return std::sph_bessel(ell, x);
+    return 0.0;
 #else
     // Otherwise lets use GSL 
    
@@ -177,7 +178,8 @@ namespace Utils{
   double J_n(const int n, const double x){
 #if ((defined(_MSVC_LANG) && _MSVC_LANG >= 201703L) || (__cplusplus >= 201703L))
     // If you have a c++17 compiler you can use this
-    return std::cyl_bessel_j(n, x);
+    //return std::cyl_bessel_j(n, x);
+    return 0.0;
 #else
     if(n > 100 && x < 0.2 * n) return 0.0;
     return gsl_sf_bessel_Jn(n, x);
