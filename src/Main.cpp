@@ -14,11 +14,11 @@ int main(int argc, char **argv){
 
   // Background parameters
   double h           = 0.67;
-  double OmegaB      = 0.05;
-  double OmegaCDM    = 0.267;
-  double OmegaK      = 0.0;
-  double Neff        = 3.046;
-  double TCMB        = 2.7255;
+  double Omega_B0      = 0.05;
+  double Omega_CDM0    = 0.267;
+  double Omega_K0      = 0.0;
+  double N_eff        = 3.046;
+  double T_CMB0        = 2.7255;
 
   // Recombination parameters
   double Yp          = 0.245;
@@ -33,7 +33,7 @@ int main(int argc, char **argv){
   //=========================================================================
 
   // Set up and solve the background
-  BackgroundCosmology cosmo(h, OmegaB, OmegaCDM, OmegaK, Neff, TCMB);
+  BackgroundCosmology cosmo(h, Omega_B0, Omega_CDM0, Omega_K0, N_eff, T_CMB0);
   cosmo.solve();
   cosmo.info();
   
