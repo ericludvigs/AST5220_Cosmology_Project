@@ -56,7 +56,7 @@ class BackgroundCosmology{
     void solve();
 
     // Output some results to file
-    void output(const std::string filename) const;
+    void output(const std::string& filename) const;
 
     // Get functions that we must implement
     double eta_of_x(double x) const;
@@ -72,6 +72,9 @@ class BackgroundCosmology{
     double get_Omega_CDM(double x = 0.0) const;
     double get_Omega_Lambda(double x = 0.0) const;
     double get_Omega_K(double x = 0.0) const;
+
+    double get_sum_DensityParams(double x = 0.0) const;
+
     double get_Omega_Mnu(double x = 0.0) const;
     double get_H0() const;
     double get_h() const;
@@ -79,6 +82,8 @@ class BackgroundCosmology{
     double get_T_CMB(double x = 0.0) const;
 
     // Distance measures
+    double get_r_distance_of_x(double x) const;
+    double get_angular_diameter_distance_of_x(double x) const;
     double get_luminosity_distance_of_x(double x) const;
     double get_comoving_distance_of_x(double x) const;
 
