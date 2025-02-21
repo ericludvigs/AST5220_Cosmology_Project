@@ -20,6 +20,8 @@ All relevant information about the project and the different milestones can be f
 
 # Compiling
 
+Milestone I: Compile target `cmb` using [ make cmb ] in terminal, as expected. The output compiled binary `cmb` I used can be found in Milestone I folder, and can be ran directly with `$ ./cmb` (after navigating to this folder in the terminal).
+
 TODO: Change instructions as changes are made
 
 Compile the code running [ make ]. If you want to compile this on your computer you need to install the [GSL library](ftp://ftp.gnu.org/gnu/gsl/) first. See below for instructions if you haven't installed a library lik this before.
