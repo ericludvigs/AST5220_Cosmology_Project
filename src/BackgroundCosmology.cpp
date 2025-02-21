@@ -277,7 +277,7 @@ void BackgroundCosmology::output(const std::string& filename) const{
   Vector x_array = Utils::linspace(x_min, x_max, n_pts);
 
   std::ofstream fp(filename.c_str());
-  fp << "      x      |      eta     |      t       |      Hp      |    dHp/dx    |   ddHp/ddx   |      Chi     |      d_A     |      d_L     | Sum_Dens_Params |    Omega_B   |   Omega_CDM  | Omega_Lambda |  Omega_gamma |   Omega_Nu   |   Omega_K    |\n";
+  fp << "      x      |      eta     |      t       |      Hp      |    dHp/dx    |   ddHp/ddx   |      Chi     |      d_A     |      d_L     | Sum_Dens_Params |    Omega_B   |   Omega_CDM  | Omega_Lambda |  Omega_gamma |   Omega_Nu   |   Omega_K    \n";
   auto print_data = [&] (const double x) {
     fp << std::setw(12) << x                                     << " | ";
     fp << std::setw(12) << eta_of_x(x)                           << " | ";
@@ -294,7 +294,7 @@ void BackgroundCosmology::output(const std::string& filename) const{
     fp << std::setw(12) << get_Omega_Lambda(x)                   << " | ";
     fp << std::setw(12) << get_Omega_gamma(x)                    << " | ";
     fp << std::setw(12) << get_Omega_Nu(x)                       << " | ";
-    fp << std::setw(12) << get_Omega_K(x)                        << " | ";
+    fp << std::setw(12) << get_Omega_K(x)                        << " ";
     fp <<"\n";
   };
   std::for_each(x_array.begin(), x_array.end(), print_data);
