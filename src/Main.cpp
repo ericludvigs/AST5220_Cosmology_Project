@@ -38,11 +38,11 @@ int main(int argc, char **argv){
   cosmo.info();
   
   // Output background evolution quantities
-  cosmo.output("cosmology.csv");
+  cosmo.output("results/cosmology.csv");
 
   // Do the supernova fits. Uncomment when you are ready to run this
   // Make sure you read the comments on the top of src/SupernovaFitting.h
-  mcmc_fit_to_supernova_data("data/supernovadata.txt", "results_supernovafitting.txt");
+  mcmc_fit_to_supernova_data("data/supernovadata.txt", "results/results_supernovafitting.txt");
 
   // Remove when module is completed
   return 0;
