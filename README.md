@@ -20,11 +20,11 @@ All relevant information about the project and the different milestones can be f
 
 # Compiling
 
-Milestone I: Compile target `cmb` using [ make cmb ] in terminal, as expected. The output compiled binary `cmb` I used can be found in Milestone I folder, and can be ran directly with `$ ./cmb` (after navigating to this folder in the terminal).
+Compile target `cmb` using [ make cmb ] in terminal, as expected. The [GSL library](ftp://ftp.gnu.org/gnu/gsl/) is required. See below for instructions.
 
-TODO: Change instructions as changes are made
+The compiled binary `cmb` used to actually generate output for each Milestone is copied to the respective Milestone X folder. The binary expects to be in the project root folder, and must be moved there before running. Use `$ ./cmb` to run.
 
-Compile the code running [ make ]. If you want to compile this on your computer you need to install the [GSL library](ftp://ftp.gnu.org/gnu/gsl/) first. See below for instructions if you haven't installed a library lik this before.
+TODO: Change instructions below as changes are made
 
 The code runs from Main.cpp and then proceeds to go through the different milestones one by one untill we have the CMB power spectra in the end. If you get it compiled then run it as [ ./cmb ]. It will crash with "Error: Spline eta has not been created". That is fine, it's one of your task to implement this. 
 
