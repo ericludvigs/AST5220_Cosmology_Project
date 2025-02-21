@@ -16,7 +16,7 @@
 // * Load the chains and skip the first few hundred samples (the burnin of the chains). E.g. loadtxt(file,skiprows=200) in python
 // * Find the minimum chi2 and the corresponding best-fit parameters (you can use np.argmin to get index of the minvalue in python)
 // * Select all samples of OmegaM and OmegaLambda (computed from OmegaM and OmegaK) that satisfy chi2 < chi2_min + 3.53 
-//   (e.g. OmegaM[chi2 < chi2min + 3.53] in python)
+//   (e.g. OmegaM[chi2 < chi2_min + 3.53] in python)
 // * Scatterplotting these gives you the 1sigma (68.4%) confidence region
 // * Find the standard deviation of the samples to get the 1sigma confidence region of the parameters (assuming the posterior is a gaussian)
 // * Make and plot a histogram of the samples for the different parameters (OmegaM, OmegaK, OmegaLambda, H0)
@@ -173,7 +173,8 @@ void mcmc_fit_to_supernova_data(std::string supernovadata_filename, std::string 
         std::cout << std::setw(15) << parameters[i] << " ";
         out << std::setw(15) << parameters[i] << " ";
       }
-      out << "\n";
+      //out << "\n";
+      out << std::setw(15) << " " << nsample/double(steps)*100.0 << "%\n";
       std::cout << std::setw(15) << " " << nsample/double(steps)*100.0 << "%\n";
       
       // Record new best-fit 
