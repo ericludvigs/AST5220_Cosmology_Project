@@ -1,3 +1,6 @@
+import json
+from pathlib import Path
+
 # Basic units (here we use SI)
 m           = 1.0                         # Length (in meters)
 s           = 1.0                         # Time (in seconds)
@@ -10,6 +13,7 @@ N           = kg*m/(s*s)                  # Newton
 J           = N*m                         # Joule
 W           = J/s                         # Watt
 Mpc         = 3.08567758e22 * m           # Megaparsec
+Gpc         = 1000 * Mpc                  # Gigaparsec
 eV          = 1.60217653e-19 * J          # Electronvolt
 
 # Physical constants
@@ -25,3 +29,9 @@ H0_over_h   = 100 * km/s/Mpc              # H0 / h
 epsilon_0   = 13.605693122994 * eV        # Ionization energy for the ground state of hydrogen
 xhi0        = 24.587387 * eV              # Ionization energy for neutral Helium
 xhi1        = 4.0 * epsilon_0             # Ionization energy for singly ionized Helium
+
+with Path.open(Path("../results/cosmology_params_today.json"), "r") as file_handle:
+    input_cosmology_params_dict = json.load(file_handle)
+
+if __name__ == "__main__":
+    print(input_cosmology_params_dict)

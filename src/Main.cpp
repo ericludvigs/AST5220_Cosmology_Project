@@ -35,7 +35,7 @@ int main(int argc, char **argv){
   // Set up and solve the background
   BackgroundCosmology cosmo(h, Omega_B0, Omega_CDM0, Omega_K0, N_eff, T_CMB0);
   cosmo.solve();
-  cosmo.info();
+  cosmo.info("results/cosmology_params_today.json");
   
   // Output background evolution quantities
   cosmo.output("results/cosmology.csv");

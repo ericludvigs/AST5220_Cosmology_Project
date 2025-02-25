@@ -247,32 +247,48 @@ double BackgroundCosmology::get_T_CMB(double x) const{
 //====================================================
 // Print out info about the class
 //====================================================
-void BackgroundCosmology::info() const{ 
+void BackgroundCosmology::info(const std::string& filename = "") const{
   std::cout << "\n";
   std::cout << "Info about cosmology class:\n";
   std::cout << "Sum of dens. params.:  " << std::setw(5) << get_sum_DensityParams(0.0) << "\n";
   std::cout << "Omega_B0:      " << std::setw(15) << Omega_B0      << "\n";
   std::cout << "Omega_CDM0:    " << std::setw(15) << Omega_CDM0    << "\n";
-  std::cout << "Omega_Lambda+: " << std::setw(15) << Omega_Lambda0 << "\n";
+  std::cout << "Omega_Lambda0: " << std::setw(15) << Omega_Lambda0 << "\n";
   std::cout << "Omega_K0:      " << std::setw(15) << Omega_K0      << "\n";
   std::cout << "Omega_Nu0:     " << std::setw(15) << Omega_Nu0     << "\n";
   std::cout << "Omega_gamma0:  " << std::setw(15) << Omega_gamma0  << "\n";
   std::cout << "N_eff:         " << std::setw(15) << N_eff         << "\n";
   std::cout << "h:             " << std::setw(15) << h             << "\n";
-  std::cout << "T_CMB+:        " << std::setw(15) << T_CMB0        << "\n";
+  std::cout << "T_CMB0:        " << std::setw(15) << T_CMB0        << "\n";
   std::cout << "H0:            " << std::setw(15) << H0            << "\n";
   std::cout << "H early radiation era:           " << std::setw(15) << Hp_of_x(Constants.x_start) << "\n";
   std::cout << "H little bit before current era: " << std::setw(15) << Hp_of_x(0.00001) << "\n";
   std::cout << std::endl;
+
+  if (!filename.empty()) {
+    std::ofstream fp(filename.c_str());
+    fp << "{" << "\n";
+    fp << "    \"Omega_B0\": " << Omega_B0 << ",\n";
+    fp << "    \"Omega_CDM0\": " << Omega_CDM0 << ",\n";
+    fp << "    \"Omega_Lambda0\": " << Omega_Lambda0 << ",\n";
+    fp << "    \"Omega_K0\": " << Omega_K0 << ",\n";
+    fp << "    \"Omega_Nu0\": " << Omega_Nu0 << ",\n";
+    fp << "    \"Omega_gamma0\": " << Omega_gamma0 << ",\n";
+    fp << "    \"N_eff\": " << N_eff << ",\n";
+    fp << "    \"T_CMB0\": " << T_CMB0 << ",\n";
+    fp << "    \"h\": " << h << ",\n";
+    fp << "    \"H0\": " << H0 << "\n";
+    fp << "}" << "\n";
+  }
 }
 
 //====================================================
 // Output some data to file
 //====================================================
 void BackgroundCosmology::output(const std::string& filename) const{
-  const double x_min = -10.0;
+  const double x_min = -12.0;
   const double x_max =  0.0;
-  const int    n_pts =  100;
+  const int    n_pts =  1000;
   
   Vector x_array = Utils::linspace(x_min, x_max, n_pts);
 

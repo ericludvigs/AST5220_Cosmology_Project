@@ -51,7 +51,7 @@ class BackgroundCosmology{
         );
 
     // Print some useful info about the class
-    void info() const;
+    void info(const std::string& filename) const;
 
     // Do all the solving
     void solve();
