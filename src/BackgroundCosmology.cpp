@@ -133,8 +133,8 @@ double BackgroundCosmology::ddHpddx_of_x(double x) const{
 
 double BackgroundCosmology::get_Omega_B(double x) const{
   if(x == 0.0) return Omega_B0;
-  double a = exp(x);
-  double Omega_B = ( Omega_B0*pow(H0,2) )/( pow(a,3)*pow(H_of_x(x),2) );
+  const double a = exp(x);
+  const double Omega_B = ( Omega_B0*pow(H0,2) )/( pow(a,3)*pow(H_of_x(x),2) );
 
   return Omega_B;
 }

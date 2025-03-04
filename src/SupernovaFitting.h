@@ -37,9 +37,11 @@ void mcmc_fit_to_supernova_data(std::string supernovadata_filename, std::string 
   // Maximal number of samples to generate
   const int maxsteps = 10000;
   // Seed for random number generator
-  const int seed = 1234;
+  const int seed = 3593;
   // How many meters in a Gpc
   const double Gpc = Constants.Mpc * 1000;
+  // Do printing?
+  const bool do_prints = false;
 
   // Read data from file
   std::vector<double> z_arr;
@@ -51,7 +53,9 @@ void mcmc_fit_to_supernova_data(std::string supernovadata_filename, std::string 
     if(!fp)
       throw std::runtime_error("Error: cannot open file " + filename);
     std::getline(fp, header);
-    std::cout << "Reading luminosity data from file:\n";
+    if (do_prints) {
+      std::cout << "Reading luminosity data from file:\n";
+    }
     while(1){
       // Read line by line
       double z, L, dL;
@@ -62,7 +66,9 @@ void mcmc_fit_to_supernova_data(std::string supernovadata_filename, std::string 
       z_arr.push_back(z);
       L_arr.push_back(L);
       dL_arr.push_back(dL);
-      std::cout << "z: " << z << " " << L << " " << dL << "\n";
+      if (do_prints) {
+        std::cout << "z: " << z << " " << L << " " << dL << "\n";
+      }
     }
     std::cout << "We found n = " << z_arr.size() << " points\n";
   };
@@ -166,16 +172,22 @@ void mcmc_fit_to_supernova_data(std::string supernovadata_filename, std::string 
       parameters = new_parameters;
 
       // Write sample to file and screen
-      std::cout << "#          chi2            h           OmegaM           OmegaK               Acceptrate\n";
-      std::cout << std::setw(15) << chi2 << " ";
+      if (do_prints) {
+        std::cout << "#          chi2            h           OmegaM           OmegaK               Acceptrate\n";
+        std::cout << std::setw(15) << chi2 << " ";
+      }
       out       << std::setw(15) << chi2 << " ";
       for(int i = 0; i < nparam; i++){
-        std::cout << std::setw(15) << parameters[i] << " ";
+        if (do_prints) {
+          std::cout << std::setw(15) << parameters[i] << " ";
+        }
         out << std::setw(15) << parameters[i] << " ";
       }
       //out << "\n";
       out << std::setw(15) << " " << nsample/double(steps)*100.0 << "%\n";
-      std::cout << std::setw(15) << " " << nsample/double(steps)*100.0 << "%\n";
+      if (do_prints) {
+        std::cout << std::setw(15) << " " << nsample/double(steps)*100.0 << "%\n";
+      }
       
       // Record new best-fit 
       if(chi2 < chi2_min){
@@ -186,8 +198,10 @@ void mcmc_fit_to_supernova_data(std::string supernovadata_filename, std::string 
   }
 
   // Print best-fit
-  std::cout << "Minimum chi^2 found " << chi2_min << " ";
-  for(int i = 0; i < nparam; i++)
-    std::cout << best_parameters[i] << " ";
-  std::cout << "\n";
+  if (do_prints) {
+    std::cout << "Minimum chi^2 found " << chi2_min << " ";
+    for(int i = 0; i < nparam; i++)
+      std::cout << best_parameters[i] << " ";
+    std::cout << "\n";
+  }
 }

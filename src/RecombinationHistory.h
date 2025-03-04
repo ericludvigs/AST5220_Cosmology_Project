@@ -21,6 +21,7 @@ class RecombinationHistory{
     // The start and end points for recombination arrays (can be modified)
     const double x_start  = Constants.x_start;
     const double x_end    = Constants.x_end;
+    const int num_x_points = Constants.num_x_points;
     
     // Numbers of points of Xe,ne array (modify as you see fit)
     const int npts_rec_arrays = 4000;

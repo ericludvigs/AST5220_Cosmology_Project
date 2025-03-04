@@ -34,9 +34,9 @@ void RecombinationHistory::solve_number_density_electrons(){
   //=============================================================================
   // TODO: Set up x-array and make arrays to store X_e(x) and n_e(x) on
   //=============================================================================
-  Vector x_array;
-  Vector Xe_arr;
-  Vector ne_arr;
+  Vector x_array = Utils::linspace(x_start, x_end, num_x_points);
+  Vector Xe_arr  = Vector(npts_rec_arrays);
+  Vector ne_arr  = Vector(npts_rec_arrays);
 
   // Calculate recombination history
   bool saha_regime = true;
@@ -61,8 +61,8 @@ void RecombinationHistory::solve_number_density_electrons(){
       //=============================================================================
       // TODO: Store the result we got from the Saha equation
       //=============================================================================
-      //...
-      //...
+      Xe_arr[i] = Xe_current;
+      ne_arr[i] = ne_current;
 
     } else {
 
@@ -116,19 +116,34 @@ std::pair<double,double> RecombinationHistory::electron_fraction_from_saha_equat
   const double H0_over_h   = Constants.H0_over_h;
 
   // Fetch cosmological parameters
-  //const double OmegaB      = cosmo->get_OmegaB();
-  //...
-  //...
+  const double H0 = cosmo->get_H0();
+  const double OmegaB0 = cosmo->get_Omega_B(0.0);
+  const double T_CMB = cosmo->get_T_CMB(x);
+  // assumption we made in text
+  const double T_b = T_CMB;
 
   // Electron fraction and number density
   double Xe = 0.0;
   double ne = 0.0;
-  
+
+  // number density of baryons - assume no heavier elements,
+  // so this is approx. baryon density over number hydrogen mass
+  const double rho_c0 = (3.0)/(8.0*M_PI*G)*pow(H0, 2.0);
+  const double rho_b = rho_c0 * OmegaB0;
+  const double n_b = rho_b/m_H;
   //=============================================================================
   // TODO: Compute Xe and ne from the Saha equation
   //=============================================================================
-  //...
-  //...
+  double S_RHS = 1/n_b*pow((m_e*T_b)/(2*M_PI), 3/2)*exp(-epsilon_0/(k_b*T_b));
+  // if R ~ 1
+  if (abs(S_RHS) > 4.0/1e-4) {
+    // abc formula solution, rewritten somewhat for numerics
+    Xe = (S_RHS/2.0)*(-1 + sqrt(1 + 4.0/S_RHS));
+  }
+  else {
+    // taylor expansion approximation
+    Xe = (S_RHS/2.0)*(-1 + 1 + (1/2.0)*(4.0/S_RHS));
+  }
 
   return std::pair<double,double>(Xe, ne);
 }

@@ -44,15 +44,13 @@ int main(int argc, char **argv){
   // Make sure you read the comments on the top of src/SupernovaFitting.h
   mcmc_fit_to_supernova_data("data/supernovadata.txt", "results/results_supernovafitting.txt");
 
-  // Remove when module is completed
-  return 0;
-
   //=========================================================================
   // Module II
   //=========================================================================
   
   // Solve the recombination history
   RecombinationHistory rec(&cosmo, Yp);
+  std::cout << "Start solving for recombination";
   rec.solve();
   rec.info();
 
