@@ -86,6 +86,15 @@ void RecombinationHistory::solve_number_density_electrons(){
       //=============================================================================
       //...
       //...
+      double Xe_ini = (Constants.c*exp(x_start));
+      Vector y_ic{Xe_ini};
+
+      peebles_Xe_ode.solve(dXedx, x_array, y_ic);
+      auto Xe_solution = peebles_Xe_ode.get_data_by_component(0);
+
+      Xe_arr[i] = 0.0;
+      double n_H = 0.0;
+      ne_arr[i] = Xe_arr[i]*n_H;
     
     }
   }
@@ -96,6 +105,7 @@ void RecombinationHistory::solve_number_density_electrons(){
   //=============================================================================
   //...
   //...
+  log_Xe_of_x_spline.create(x_array, Xe_arr, "Xe of x Spline");
 
   Utils::EndTiming("Xe");
 }
@@ -131,6 +141,8 @@ std::pair<double,double> RecombinationHistory::electron_fraction_from_saha_equat
   const double rho_c0 = (3.0)/(8.0*M_PI*G)*pow(H0, 2.0);
   const double rho_b = rho_c0 * OmegaB0;
   const double n_b = rho_b/m_H;
+  // approximation made
+  const double n_H = n_b;
   //=============================================================================
   // TODO: Compute Xe and ne from the Saha equation
   //=============================================================================
@@ -144,6 +156,9 @@ std::pair<double,double> RecombinationHistory::electron_fraction_from_saha_equat
     // taylor expansion approximation
     Xe = (S_RHS/2.0)*(-1 + 1 + (1/2.0)*(4.0/S_RHS));
   }
+
+  // from definition
+  ne = Xe*n_H;
 
   return std::pair<double,double>(Xe, ne);
 }
