@@ -1,19 +1,14 @@
+import sys
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
 
+sys.path.append("..")
 import python_methods.constants as constants
 
 show_plots = False
-
-
-def redshift(x):
-    a = np.exp(x)
-    z = 1.0 / a - 1
-    return z
 
 
 cosmology_data_filename = Path("../results/cosmology.csv")
@@ -26,7 +21,7 @@ cosmology_df.columns = cosmology_df.columns.str.strip()
 print(cosmology_df)
 
 # make an array with redshifts, reverse it and cut it down to match with the input data
-z_array = redshift(cosmology_df.index.to_numpy())[::-1]
+z_array = constants.redshift(cosmology_df.index.to_numpy())[::-1]
 # print(f"{z_array=}")
 
 supernovadata = np.loadtxt(supernova_data_filename)
@@ -292,31 +287,38 @@ parameter_list = {
     "OmegaLambda": supernova_fitting_OmegaLambda,
 }
 for param_name, parameter_array in parameter_list.items():
-    print(param_name)
+    print(f"{param_name}")
     current_std = np.std(parameter_array)
-    print(current_std)
+    print(f"STD: {current_std:.5f}")
     current_mean = np.mean(parameter_array)
-    print(current_mean)
+    print(f"Mean: {current_mean:.5f}")
     current_variance = np.var(parameter_array)
     current_sigma = np.sqrt(current_variance)
     num_bins = 20
 
+    # +0.1 looks slightly better in plot
+    param_space_array = np.linspace(np.min(parameter_array), np.max(parameter_array) + 0.1, 1000)
+    gaussian_array = (1 / (current_sigma * np.sqrt(2 * np.pi))) * np.exp(
+        -(1 / 2) * (param_space_array - current_mean) ** 2 / (current_variance)
+    )
+
     # histogram of parameter selections
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
-    # result = ax.hist(
-    #    parameter_array,
-    #    bins=num_bins,
-    #    density=True,
-    # )
+    result = ax.hist(
+        parameter_array,
+        bins=num_bins,
+        density=True,
+    )
 
-    # make gaussian plot
-    sns.histplot(parameter_array, bins=num_bins, kde=True, color="blue", common_norm=True, ax=ax)
+    # plot equivalent gaussian distribution
+    ax.plot(param_space_array, gaussian_array)
+
+    # make gaussian plot with seaborn
+    # sns.histplot(parameter_array, bins=num_bins, kde=True, color="blue", common_norm=True, ax=ax)
 
     ax.axvline(parameter_array[chi2_min_index], color="black", linestyle="dashed", label="Best-fit value")
 
-    # ax.set_yscale("log")
-    # ax.set_xscale("log")
     ax.set_xlabel(f"{param_name}")
     ax.set_ylabel("Count")
     ax.set_title(r"Parameter histogram")
@@ -324,5 +326,4 @@ for param_name, parameter_array in parameter_list.items():
     ax.legend()
     fig.savefig(plots_folder / f"{param_name}_histogram.png")
     if show_plots:
-        plt.show()
         plt.show()

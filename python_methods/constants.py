@@ -1,6 +1,16 @@
 import json
 from pathlib import Path
 
+import numpy as np
+
+
+def redshift(x):
+    a = np.exp(x)
+    z = 1.0 / a - 1
+    return z
+
+
+# fmt: off
 # Basic units (here we use SI)
 m           = 1.0                         # Length (in meters)
 s           = 1.0                         # Time (in seconds)
@@ -29,6 +39,7 @@ H0_over_h   = 100 * km/s/Mpc              # H0 / h
 epsilon_0   = 13.605693122994 * eV        # Ionization energy for the ground state of hydrogen
 xhi0        = 24.587387 * eV              # Ionization energy for neutral Helium
 xhi1        = 4.0 * epsilon_0             # Ionization energy for singly ionized Helium
+# fmt: on
 
 with Path.open(Path("../results/cosmology_params_today.json"), "r") as file_handle:
     input_cosmology_params_dict = json.load(file_handle)
