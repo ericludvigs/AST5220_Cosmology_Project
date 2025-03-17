@@ -10,7 +10,6 @@ import python_methods.constants as constants
 
 show_plots = False
 
-
 cosmology_data_filename = Path("../results/cosmology.csv")
 supernova_data_filename = Path("../data/supernovadata.txt").resolve()
 supernova_fitting_data_filename = Path("../results/results_supernovafitting.txt").resolve()
