@@ -1,10 +1,11 @@
 from pathlib import Path
 
-import constants
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
+
+import python_methods.constants as constants
 
 show_plots = False
 
@@ -323,4 +324,5 @@ for param_name, parameter_array in parameter_list.items():
     ax.legend()
     fig.savefig(plots_folder / f"{param_name}_histogram.png")
     if show_plots:
+        plt.show()
         plt.show()
