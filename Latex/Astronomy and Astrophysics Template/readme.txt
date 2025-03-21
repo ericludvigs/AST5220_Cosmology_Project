@@ -1,21 +1,17 @@
 %                                                             readme.txt
 % AA LaTeX class for Astronomy & Astrophysics
 % read-me file
-%                                                 (c) EDP Sciences, 2016
+%                                                 (c) EDP Sciences, 2024
 %                                            tex-support@edpsciences.org
 %-----------------------------------------------------------------------
 %
 The following files are part of the macro package AA
 
-  readme.txt      This file
-  aa.cls          The document class file
-  aadoc.pdf       User's Guide
-  aa.dem          Example of an article (LaTeX source)
-
-
-  bibtex/       Directory for BIBTeX style
-   aa.bst       Bibliography style file
-   natnotes.pdf Brief reference sheet for Natbib
+<P><LI>Directory for macros
+<P><LI>aa_example.pdf: Example of an article (LaTeX source)
+<P><LI>aa_example.zip: Example of an article (PDF output)
+<P><LI>aadoc.pdf: User's Guide (pdf)
+<P><LI>readme.txt: Information (equivalent to this page)
 
 All files are compressed in a single archive: aa-package.zip
 

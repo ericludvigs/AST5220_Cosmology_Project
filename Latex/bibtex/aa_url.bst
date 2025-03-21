@@ -1,3 +1,7 @@
+%% 2019/01 Chentao Yang
+%% 	mailto:yangcht@gmail.com
+%% Enabling the ADSURL and DOI entry to create clickable links in ref.
+
 %% 2001/06/10 EDP Sciences
 %% APJ, corrected by hand to get results for A&A, using Natbib   
 
@@ -14,12 +18,12 @@
 %%
 
 %%
-%% This is file `apj.bst',
+%% This is file `apj.bst`,
 %% generated with the docstrip utility.
 %%
 %% The original source files were:
 %%
-%% merlin.mbs  (with options: `,ay,nat,nm-rev,nmdash,dt-beg,yr-per,note-yr,atit-u,jtit-x,jttl-rm,thtit-a,vnum-x,volp-com,jpg-1,pp-last,btit-rm,add-pub,pub-par,pre-edn,edby,edbyx,blk-com,fin-bare,ppx,ed,abr,ord,jabr,eprint,amper,em-x')
+%% merlin.mbs  (with options: `,ay,nat,nm-rev,nmdash,dt-beg,yr-per,note-yr,atit-u,jtit-x,jttl-rm,thtit-a,vnum-x,volp-com,jpg-1,pp-last,btit-rm,add-pub,pub-par,pre-edn,edby,edbyx,blk-com,fin-bare,ppx,ed,abr,ord,jabr,eprint,amper,em-x`)
 %% ----------------------------------------
 %% *** Bibliographic Style for ApJ ***
 %% 
@@ -32,7 +36,7 @@
  % It may not be distributed in exchange for money,
  %   other than distribution costs.
  %
- % The author provides it `as is' and does not guarantee it in any way.
+ % The author provides it `as is` and does not guarantee it in any way.
  %
  % Copyright (C) 1994-98 Patrick W. Daly
  %-------------------------------------------------------------------
@@ -66,6 +70,7 @@
  %   \citeyear{key} ==>>             1990
  %---------------------------------------------------------------------
 
+
 ENTRY
   { address
     archiveprefix                   %EDP Sciences le 30/11/2014
@@ -76,7 +81,9 @@ ENTRY
     editor
     howpublished
     institution
-    eprint                    %EDP Sciences le 30/11/2014
+    eprint
+    doi
+    url
     journal
     key
     month
@@ -91,6 +98,7 @@ ENTRY
     type
     volume
     year
+    adsurl  
   }
   {}
   { label extra.label sort.label short.list }
@@ -205,9 +213,7 @@ FUNCTION {add.blank}
 }
 
 FUNCTION {date.block}
-{
-  skip$
-}
+{ skip$ }
 
 FUNCTION {not}
 {   { #0 }
@@ -256,7 +262,7 @@ FUNCTION {space.word}
  % Each function has a name bbl.xxx where xxx is the English word.
  % The language selected here is ENGLISH
 FUNCTION {bbl.and}
-{ "and"}
+{ "and" }
 
 FUNCTION {bbl.editors}
 { "eds." }
@@ -429,52 +435,52 @@ FUNCTION {format.names}
       "{vv~}{ll}{, jj}{, f.}" format.name$
     't :=
 
-numnames #5 >
-	{
-      nameptr #1 >
+      numnames #5 >
         {
-	      nameptr #4 =
+          nameptr #1 >
+            {
+              nameptr #4 =
                 {
                   ", {et~al.}" *
                 }
-				{
-      				nameptr #4 >
-					{ "" * }
-					{ ", " * t * }
-					if$
-				}
-				if$
-
-        }
-        't
-      if$
-	}
-	{
-      nameptr #1 >
-        {
-          namesleft #1 >
-            { ", " * t * }
-            {
-              numnames #2 >
-                { "," * }
-                'skip$
-              if$
-              s nameptr "{ll}" format.name$ duplicate$ "others" =
-                { 't := }
-                { pop$ }
-              if$
-              t "others" =
                 {
-                  " {et~al.}" *
+                  nameptr #4 >
+                    { "" * }
+                    { ", " * t * }
+                  if$
                 }
-                { " \& " * t * }
               if$
+
             }
+            't
           if$
         }
-        't
-      if$
-	} if$
+        {
+          nameptr #1 >
+            {
+              namesleft #1 >
+                { ", " * t * }
+                {
+                  numnames #2 >
+                    { "," * }
+                    'skip$
+                  if$
+                  s nameptr "{ll}" format.name$ duplicate$ "others" =
+                    { 't := }
+                    { pop$ }
+                  if$
+                  t "others" =
+                    {
+                      " {et~al.}" *
+                    }
+                    { " \& " * t * }
+                  if$
+                }
+              if$
+            }
+            't
+          if$
+        } if$
 
       nameptr #1 + 'nameptr :=
       namesleft #1 - 'namesleft :=
@@ -592,13 +598,12 @@ FUNCTION {format.eprint}
 FUNCTION {format.title}
 { title empty$
     { "" }
-    { title
-    }
+    { title }
   if$
 }
 
 FUNCTION {format.full.names}
-{'s :=
+{ 's :=
   #1 'nameptr :=
   s num.names$ 'numnames :=
   numnames 'namesleft :=
@@ -744,8 +749,7 @@ FUNCTION {format.date}
 }
 
 FUNCTION {format.btitle}
-{ title
-}
+{ title }
 
 FUNCTION {tie.or.space.connect}
 { duplicate$ text.length$ #3 <
@@ -920,8 +924,7 @@ FUNCTION {format.journal.pages}
 }
 
 FUNCTION {format.vol.num.pages}
-{ volume field.or.null
-}
+{ volume field.or.null }
 
 FUNCTION {format.chapter.pages}
 { chapter empty$
@@ -1101,7 +1104,21 @@ FUNCTION {format.full.book.spec} % The title should be on the stack.
     if$
 }
 
-%%%%%%%  End of functions from astrobib
+FUNCTION {make.href.hyperref}
+{
+  "\href{" swap$ * "}{" * swap$ * "}" * 
+}
+
+FUNCTION {format.journal}
+{ journal empty$
+    { "" }
+    { doi empty$
+        { journal }
+        { "\href{http://dx.doi.org/" doi * "}{\color{magenta}" * journal * "}" * }
+      if$
+    }
+  if$
+}
 
 FUNCTION {article}
 { output.bibitem
@@ -1111,15 +1128,17 @@ FUNCTION {article}
   format.date "year" output.check
   date.block
   crossref missing$
-    { journal
-      "journal" output.check
+    { format.journal output
       format.vol.num.pages output
     }
     { format.article.crossref output.nonnull
       format.pages output
     }
   if$
-  format.journal.pages
+  adsurl empty$
+    { format.journal.pages }
+    { format.journal.pages adsurl make.href.hyperref }
+  if$
   format.note output
   %format.eprint outputeprint                      %EDP Sciences le 30/11/2014
   fin.entry
@@ -1148,7 +1167,7 @@ FUNCTION {book}
 %    { format.bvolume output
 %      format.number.series output
 %      format.edition output
-   format.publisher
+  format.publisher
 %    }
 %    {
 %      format.book.crossref output.nonnull
@@ -1198,7 +1217,7 @@ FUNCTION {inbook}
 %      format.chapter.pages "chapter and pages" output.check
 %      format.number.series output
 %      format.edition output
-   format.publisher
+  format.publisher
 %    }
 %    {
 %      format.chapter.pages "chapter and pages" output.check
@@ -1259,6 +1278,7 @@ FUNCTION {inproceedings}
 %    }
 %  if$
   format.pages output
+  adsurl make.href.hyperref
   format.note output
   fin.entry
 }
@@ -1308,14 +1328,24 @@ FUNCTION {misc}
   fin.entry
 }
 
+FUNCTION {format.phdtitle}
+{ title empty$
+    { "" }
+    { doi empty$
+        { title }
+        { "\href{" adsurl * "}{\color{magenta}" * title * "}" * }
+      if$
+    }
+  if$
+}
+
 FUNCTION {phdthesis}
 { output.bibitem
   format.authors "author" output.check
   author format.key output
-%%%%%  name.or.dash
   format.date "year" output.check
   date.block
-%  format.title "title" output.check
+  format.phdtitle adsurl make.href.hyperref output 
   bbl.phdthesis format.thesis.type output.nonnull
   school "school" output.check
   address output
@@ -1352,6 +1382,7 @@ FUNCTION {proceedings}
 %  organization output
 %  publisher output
   format.pages output
+  adsurl make.href.hyperref
   format.note output
   fin.entry
 }

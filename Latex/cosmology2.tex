@@ -1,5 +1,5 @@
 %                                                                 
-% AA vers. 9.1, LaTeX class for Astronomy & Astrophysics
+% AA vers. 9.1, LaTeX class for Astronomy & Astrophysics - modified to 9.2
 %
 %                                                       (c) EDP Sciences
 %-----------------------------------------------------------------------
@@ -12,17 +12,70 @@
 %                              according to the author-year natbib style
 
 %
-\documentclass{aa}  
+\documentclass[a4paper]{aa}
 
+\usepackage{natbib, twoopt}
+\bibpunct{(}{)}{;}{a}{}{,} % to follow the A&A style
+\usepackage[hyphenbreaks]{breakurl}
 %
 \usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{lipsum}
+\usepackage{url}
+\usepackage{xcolor}
+\definecolor{cobalt}{rgb}{0.06, 0.2, 0.65}
+\usepackage{subcaption}         % subfigures
+\usepackage{lscape}             % to rotate a single page table, example in appendix.
+                                % For landscape tables, see the longtable examples.
+\usepackage{placeins}           % useful with \FloatBarrier, to keep 
+                                % onecolumn floats from drifting to the next section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{txfonts}
+%\usepackage{txfonts}
+\usepackage[varg]{txfonts}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\usepackage[options]{hyperref}
+\usepackage[colorlinks, breaklinks]{hyperref}
+\hypersetup{%
+  colorlinks = true,
+  linkcolor  = orange,
+  citecolor = red,
+  urlcolor = blue,
+  pdftitle={Project 1}
+}
 % To add links in your PDF file, use the package "hyperref"
 % with options according to your LaTeX or PDFLaTeX drivers.
 %
+
+% remove warnings about empty links when using hyperref
+% https://tex.stackexchange.com/questions/345764/journal-class-shows-package-hyperref-warning-suppressing-link-with-empty-targe
+% and add hyperlinks to citations
+% https://github.com/yangcht/AA-bibstyle-with-hyperlink
+\makeatletter
+\renewcommand*\aa@numarticle{Cosmology II numerical project}
+%\renewcommand*\aa@pageof{, page \thepage{} of \pageref*{LastPage}}
+% change some other displayed information, this is not a formal A&A paper after all
+\renewcommand*\aa@manuscriptname{%
+  templated numerical project
+  \hspace{\stretch{1}}%
+  \copyright UiO \the\year
+}
+\renewcommand*\aa@textidlineempty{{\slshape A\&A template:}\ Cosmology II}
+% for the hyperlinks
+\newcommandtwoopt{\citeads}[3][][]{\href{http://adsabs.harvard.edu/abs/#3}%
+    {\def\hyper@linkstart##1##2{}%
+     \let\hyper@linkend\@empty\citealp[#1][#2]{#3}}}
+\newcommandtwoopt{\citepads}[3][][]{\href{http://adsabs.harvard.edu/abs/#3}%
+    {\def\hyper@linkstart##1##2{}%
+     \let\hyper@linkend\@empty\citep[#1][#2]{#3}}}
+\newcommandtwoopt{\citetads}[3][][]{\href{http://adsabs.harvard.edu/abs/#3}%
+    {\def\hyper@linkstart##1##2{}%
+     \let\hyper@linkend\@empty\citet[#1][#2]{#3}}}
+\newcommandtwoopt{\citeyearads}[3][][]%
+    {\href{http://adsabs.harvard.edu/abs/#3}
+    {\def\hyper@linkstart##1##2{}%
+     \let\hyper@linkend\@empty\citeyear[#1][#2]{#3}}}
+\makeatother
+
+
 \begin{document} 
 
 
@@ -32,7 +85,7 @@
    \subtitle{AST5220: Cosmology II}
 
    \author{Candidate 15003
-          \inst{1}
+          %\inst{1}
           }
 
    \institute{Institute of Theoretical Astrophysics,  
@@ -48,56 +101,23 @@
 \input{chapters/introduction}
 \input{chapters/milestone_1.tex}
 \input{chapters/milestone_2.tex}
-\input{chapters/milestone_3.tex}
-\input{chapters/milestone_4.tex}
+%\input{chapters/milestone_3.tex}
+%\input{chapters/milestone_4.tex}
 \input{chapters/conclusion}
 
 %-------------------------------------------------------------------
-
-% WARNING
-%-------------------------------------------------------------------
-% Please note that we have included the references to the file aa.dem in
-% order to compile it, but we ask you to:
-%
 % - use BibTeX with the regular commands:
 %   \bibliographystyle{aa} % style aa.bst
 %   \bibliography{Yourfile} % your references Yourfile.bib
 %
 % - join the .bib files when you upload your source files
+
+\bibliographystyle{bibtex/aa_url}
+\bibliography{bibtex/bibliography.bib}
+
 %-------------------------------------------------------------------
 
-\begin{thebibliography}{}
+\input{chapters/appendix.tex}
 
-  \bibitem[Baker(1966)]{baker} Baker, N. 1966,
-      in Stellar Evolution,
-      ed.\ R. F. Stein,\& A. G. W. Cameron
-      (Plenum, New York) 333
-
-   \bibitem[Balluch(1988)]{balluch} Balluch, M. 1988,
-      A\&A, 200, 58
-
-   \bibitem[Cox(1980)]{cox} Cox, J. P. 1980,
-      Theory of Stellar Pulsation
-      (Princeton University Press, Princeton) 165
-
-   \bibitem[Cox(1969)]{cox69} Cox, A. N.,\& Stewart, J. N. 1969,
-      Academia Nauk, Scientific Information 15, 1
-
-   \bibitem[Mizuno(1980)]{mizuno} Mizuno H. 1980,
-      Prog. Theor. Phys., 64, 544
-   
-   \bibitem[Tscharnuter(1987)]{tscharnuter} Tscharnuter W. M. 1987,
-      A\&A, 188, 55
-  
-   \bibitem[Terlevich(1992)]{terlevich} Terlevich, R. 1992, in ASP Conf. Ser. 31, 
-      Relationships between Active Galactic Nuclei and Starburst Galaxies, 
-      ed. A. V. Filippenko, 13
-
-   \bibitem[Yorke(1980a)]{yorke80a} Yorke, H. W. 1980a,
-      A\&A, 86, 286
-
-   \bibitem[Zheng(1997)]{zheng} Zheng, W., Davidsen, A. F., Tytler, D. \& Kriss, G. A.
-      1997, preprint
-\end{thebibliography}
-
+%-------------------------------------------------------------------
 \end{document}

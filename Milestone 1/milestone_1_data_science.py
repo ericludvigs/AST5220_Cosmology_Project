@@ -174,11 +174,11 @@ if show_plots:
     plt.show()
 
 print()  # blank line
-print(f"Calculated current age of the universe, cosmic time: {cosmology_df['t'][0] / gigayears:.3f} * 10^9 yrs")
-print("Actual age of the universe should be 14.3 billion years ish")
+print(f"Calculated current age of the Universe, cosmic time: {cosmology_df['t'][0] / gigayears:.3f} * 10^9 yrs")
+print("Actual age of the Universe should be 14.3 billion years ish")
 
 print(
-    f"Calculated current age of the universe, conformal time: {cosmology_df['eta'][0] / (constants.c * gigayears):.3f} * 10^9 yrs"
+    f"Calculated current age of the Universe, conformal time: {cosmology_df['eta'][0] / (constants.c * gigayears):.3f} * 10^9 yrs"
 )
 
 # eta(x) H_prime / c
@@ -319,7 +319,7 @@ for param_name, parameter_array in parameter_list.items():
     ax.axvline(parameter_array[chi2_min_index], color="black", linestyle="dashed", label="Best-fit value")
 
     ax.set_xlabel(f"{param_name}")
-    ax.set_ylabel("Count")
+    ax.set_ylabel(r"Bin count / (Total count * bin width)")
     ax.set_title(r"Parameter histogram")
     # ax.grid()
     ax.legend()

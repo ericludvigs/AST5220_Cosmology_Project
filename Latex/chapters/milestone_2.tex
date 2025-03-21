@@ -1,8 +1,42 @@
-\section{Milestone II}
-Some introduction about what it is all about.
+\section{Milestone II}\label{sec:milestone_2}
+With fundamental cosmology established in sec. \ref{sec:milestone_1}, we can now describe the baseline or so-called "background" behaviour of our Universe, with a relatively simple evolution of cosmological paremeters as the universe expands (refer fig. \ref{fig:milestone_1_Omega_i_of_x}). Now we wish to look backwards from our current time, and compute the path of photons travelling towards a current-day observer from the early universe.
+
+In order to study the behaviour of photons and thermal evolution of the early universe, we consider it to be a large continuous fluid, specifically a hot plasma. The thermodynamics and statistical mechanics for this are described in \citet[][chap.~x]{baumannLectureNotesCosmology2017} and \citet[][chap.~x]{dodelsonModernCosmology2003}, while the specific Boltzmann formalism utilized is that of \citet[][]{wintherCosmologyIILecture2024}, \href{https://cmb.wintherscoming.no/theory_thermodynamics.php#thermo}{which can be found here}.
 
 \subsection{Theory}
 The theory behind this milestone.
+
+Start with eqs. \ref{eq:tau_integral} and \ref{eq:tau_ODE}.
+
+\begin{equation}\label{eq:tau_integral}
+\tau(\eta) = \int_{\eta}^{\eta_0} n_e \sigma_T a d\eta'
+\end{equation}
+
+\begin{equation}\label{eq:tau_ODE}
+\boxed{\tau' = \frac{d\tau}{dx} = -\frac{c n_e \sigma_T }{H}.}
+\end{equation}
+
+We wish to compute the fractional electron density given by \ref{eq:fractional_electron_density}, where we assume all baryons are protons and there are no heavier elements. This approximation is acceptable for getting a simple reionization with clear falloff of electrons as they get absorbed into hydrogen atoms. By including ionization into Helium, our resulting ionization plot would have multiple bumps for ionization into different states of Hydrogen+Helium.
+
+
+\begin{equation}\label{eq:fractional_electron_density}
+\boxed{X_e \equiv n_e / n_H}, \text{ with } \,\, n_H = n_b \approx \frac{\rho_b}{m_H} = \frac{\Omega_{b0} \rho_{c0}}{m_H a^3}
+\end{equation}
+
+
+Saha approximation \ref{eq:saha_approx}
+
+\begin{equation}\label{eq:saha_approx}
+\boxed{\frac{X_e^2}{1-X_e} = \frac{1}{n_b} \left(\frac{m_e
+T_b}{2\pi}\right)^{3/2} e^{-\epsilon_0/T_b}}
+\end{equation}
+
+Peebles equation \ref{eq:peebles_equation}, with the supporting definitions in eq. \ref{eq:peebles_quantities_definition}.
+
+\begin{equation}\label{eq:peebles_equation}
+\boxed{\frac{dX_e}{dx} = \frac{C_r(T_b)}{H} \left[\beta(T_b)(1-X_e) - n_H
+\alpha^{(2)}(T_b)X_e^2\right],}
+\end{equation}
 
 \subsection{Implementation details}
 Something about the numerical work.

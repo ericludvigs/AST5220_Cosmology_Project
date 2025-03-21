@@ -55,7 +55,7 @@ int main(int argc, char **argv){
   rec.info();
 
   // Output recombination quantities
-  rec.output("recombination.txt");
+  rec.output("results/recombination.csv");
   
   // Remove when module is completed
   return 0;
