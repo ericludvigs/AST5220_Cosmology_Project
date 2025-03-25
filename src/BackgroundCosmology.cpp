@@ -200,6 +200,8 @@ double BackgroundCosmology::get_r_distance_of_x(double x) const {
     if (Omega_K0 < 0.0) return Chi*(sin(A)/A);
     if (Omega_K0 > 0.0) return Chi*(sinh(A)/A);
   }
+  // compiler throws a fit about not having a return here
+  throw std::invalid_argument("Omega_K0 is somehow neither 0, nor smaller or greater than 0");
 }
 
 

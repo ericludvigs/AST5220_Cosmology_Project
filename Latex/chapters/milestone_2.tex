@@ -1,7 +1,7 @@
 \section{Milestone II}\label{sec:milestone_2}
-With fundamental cosmology established in sec. \ref{sec:milestone_1}, we can now describe the baseline or so-called "background" behaviour of our Universe, with a relatively simple evolution of cosmological paremeters as the universe expands (refer fig. \ref{fig:milestone_1_Omega_i_of_x}). Now we wish to look backwards from our current time, and compute the path of photons travelling towards a current-day observer from the early universe.
+With fundamental cosmology established in sec. \ref{sec:milestone_1}, we can now describe the baseline or so-called "background" behaviour of our universe, with a relatively simple evolution of cosmological parameters as the universe expands (refer fig. \ref{fig:milestone_1_Omega_i_of_x}). Now we wish to look backwards from our current time, and compute the path of photons travelling towards a current-day observer from the early universe.
 
-In order to study the behaviour of photons and thermal evolution of the early universe, we consider it to be a large continuous fluid, specifically a hot plasma. The thermodynamics and statistical mechanics for this are described in \citet[][chap.~x]{baumannLectureNotesCosmology2017} and \citet[][chap.~x]{dodelsonModernCosmology2003}, while the specific Boltzmann formalism utilized is that of \citet[][]{wintherCosmologyIILecture2024}, \href{https://cmb.wintherscoming.no/theory_thermodynamics.php#thermo}{which can be found here}.
+In order to study the behaviour of photons and thermal evolution of the early universe, we consider it to be a large continuous fluid, specifically a hot plasma. The thermodynamics and statistical mechanics for this are described in \citet[][chap.~x]{baumannLectureNotesCosmology2017} and \citet[][chap.~x]{dodelsonModernCosmology2003}, while the specific Boltzmann formalism utilized is that of \citet[][]{wintherCosmologyIILecture2024}, \href{https://cmb.wintherscoming.no/theory_thermodynamics.php#thermo}{available here}.
 
 \subsection{Theory}
 The theory behind this milestone.
@@ -9,33 +9,43 @@ The theory behind this milestone.
 Start with eqs. \ref{eq:tau_integral} and \ref{eq:tau_ODE}.
 
 \begin{equation}\label{eq:tau_integral}
-\tau(\eta) = \int_{\eta}^{\eta_0} n_e \sigma_T a d\eta'
+\tau(\eta) = \int_{\eta}^{\eta_0} n_e \sigma_T a d\eta' \quad \text{(unitless)}
 \end{equation}
 
 \begin{equation}\label{eq:tau_ODE}
-\boxed{\tau' = \frac{d\tau}{dx} = -\frac{c n_e \sigma_T }{H}.}
+\boxed{\tau' = \frac{d\tau}{dx} = -\frac{c n_e \sigma_T }{H}}
+\end{equation}
+
+Also the visibility function \ref{eq:visibility_function}.
+
+\begin{equation}\label{eq:visibility_function}
+\tilde{g}(x) = \frac{d}{dx}e^{-\tau} = -\tau' e^{-\tau}, \quad \text{by def.} \int_{-\infty}^{0} \tilde{g}(x)dx = 1
 \end{equation}
 
 We wish to compute the fractional electron density given by \ref{eq:fractional_electron_density}, where we assume all baryons are protons and there are no heavier elements. This approximation is acceptable for getting a simple reionization with clear falloff of electrons as they get absorbed into hydrogen atoms. By including ionization into Helium, our resulting ionization plot would have multiple bumps for ionization into different states of Hydrogen+Helium.
 
 
 \begin{equation}\label{eq:fractional_electron_density}
-\boxed{X_e \equiv n_e / n_H}, \text{ with } \,\, n_H = n_b \approx \frac{\rho_b}{m_H} = \frac{\Omega_{b0} \rho_{c0}}{m_H a^3}
+\boxed{X_e \equiv n_e / n_H}\,, \text{ with } \,\, n_H = n_b \approx \frac{\rho_b}{m_H} = \frac{\Omega_{b0} \rho_{c0}}{m_H a^3}
 \end{equation}
 
 
-Saha approximation \ref{eq:saha_approx}
+In order to calculate the electron density, we can use the Saha approximation given in eq. \ref{eq:saha_approx}. This is valid for large temperatures $T$, early in the universe. However, as the temperature falls the Saha approximation continues to predict a simple exponential decay of free electrons as they all become bound to hydrogen (and heavier elements), but this assumes the interaction \ref{TODO} continues to be perfectly efficient, which is not the case in practice. See fig. 3.8 in \citet[sec. 3.3.3]{baumannLectureNotesCosmology2017}. We seek to recreate this figure with a numerical simulation.
 
 \begin{equation}\label{eq:saha_approx}
-\boxed{\frac{X_e^2}{1-X_e} = \frac{1}{n_b} \left(\frac{m_e
-T_b}{2\pi}\right)^{3/2} e^{-\epsilon_0/T_b}}
+\boxed{\frac{X_e^2}{1-X_e} = \frac{1}{n_b} \left(\frac{m_e T_b}{2\pi}\right)^{3/2} e^{-\frac{\epsilon_0}{k_b T_b}}} \quad {(X_e \; \rm dimensionless)}
 \end{equation}
 
-Peebles equation \ref{eq:peebles_equation}, with the supporting definitions in eq. \ref{eq:peebles_quantities_definition}.
+In order to properly simulate the change in electron density, we can switch to the more accurate Peebles equation given as eq. \ref{eq:peebles_equation} (CITE Peebles, Zel'dovich), with supporting definitions in eq. \ref{eq:peebles_quantities_definition}. This equation is numerically unstable when solved for very large $T$ (early on), but is perfectly appropriate when the Saha approximation stops being accurate.
 
 \begin{equation}\label{eq:peebles_equation}
-\boxed{\frac{dX_e}{dx} = \frac{C_r(T_b)}{H} \left[\beta(T_b)(1-X_e) - n_H
-\alpha^{(2)}(T_b)X_e^2\right],}
+\boxed{\frac{dX_e}{dx} = \frac{C_r(T_b)}{H} \left[\beta(T_b)(1-X_e) - n_H \alpha^{(2)}(T_b)X_e^2\right]}\,,
+\end{equation}
+
+We will also calculate the so-called "sound horizon at decoupling", the total distance a sound-wave in the primordial photon-baryon plasma can propagate from the Big Bang until photons decouple. This is slightly smaller than the optical depth , since photons have a sound $c/\sqrt{3}$
+
+\begin{equation}
+\boxed{s(x) = \int_0^{a} \frac{c_s dt}{a} = \int_{-\infty}^{x} \frac{c_s dx}{\mathcal{H}} \to \frac{ds(x)}{dx} = \frac{c_s}{\mathcal{H}},\,\,\,\text{with}\,\,\,s(x_{\rm ini}) = \frac{c_s(x_{\rm ini})}{\mathcal{H}(x_{\rm ini})} }
 \end{equation}
 
 \subsection{Implementation details}

@@ -35,13 +35,12 @@ void RecombinationHistory::solve_number_density_electrons(){
   // TODO: Set up x-array and make arrays to store X_e(x) and n_e(x) on
   //=============================================================================
   Vector x_array = Utils::linspace(x_start, x_end, npts_rec_arrays);
-  Vector Xe_arr  = Vector(npts_rec_arrays);
-  Vector ne_arr  = Vector(npts_rec_arrays);
+  Vector log_Xe_arr  = Vector(npts_rec_arrays);
+  Vector log_ne_arr  = Vector(npts_rec_arrays);
 
   // Calculate recombination history
   bool saha_regime = true;
   for(int i = 0; i < npts_rec_arrays; i++){
-
     //==============================================================
     // TODO: Get X_e from solving the Saha equation so
     // implement the function electron_fraction_from_saha_equation
@@ -52,10 +51,15 @@ void RecombinationHistory::solve_number_density_electrons(){
     const double Xe_current = Xe_ne_data.first;
     const double ne_current = Xe_ne_data.second;
 
+    std::cout << "iteration i: "<< i << ", Xe=" << Xe_current << ", ne=" << ne_current << "\n";
+
     // Are we still in the Saha regime?
     if(Xe_current < Xe_saha_limit) {
       saha_regime = false;
-      std::cout << "exited saha regime at i=" << i;
+      saha_regime_index = i;
+      std::cout << "exited saha regime at i=" << saha_regime_index;
+      std::cout << "current electron fraction Xe = " << Xe_current;
+      std::cout << std::endl;
     }
 
     if(saha_regime){
@@ -63,8 +67,8 @@ void RecombinationHistory::solve_number_density_electrons(){
       //=============================================================================
       // Store the result we got from the Saha equation
       //=============================================================================
-      Xe_arr[i] = Xe_current;
-      ne_arr[i] = ne_current;
+      log_Xe_arr[i] = Xe_current;
+      log_ne_arr[i] = ne_current;
 
     } else {
 
@@ -74,8 +78,10 @@ void RecombinationHistory::solve_number_density_electrons(){
       // exit the for-loop!)
       // Implement rhs_peebles_ode
       //==============================================================
-      //...
-      //...
+
+      // copy of our x array from point i to the end
+      // this should contain all points after saha approx stops applying
+      Vector peebles_x_array = Vector(x_array.begin()+i, x_array.end());
 
       // The Peebles ODE equation
       ODESolver peebles_Xe_ode;
@@ -91,12 +97,12 @@ void RecombinationHistory::solve_number_density_electrons(){
       double Xe_ini = (Constants.c*exp(x_start)); // TODO:
       Vector y_ic{Xe_ini};
 
-      peebles_Xe_ode.solve(dXedx, x_array, y_ic);
+      peebles_Xe_ode.solve(dXedx, peebles_x_array, y_ic);
       auto Xe_solution = peebles_Xe_ode.get_data_by_component(0);
 
-      Xe_arr[i] = 1.0;
-      double n_H = 1.0;
-      ne_arr[i] = Xe_arr[i]*n_H;
+      log_Xe_arr[i] = log(Xe_solution[i]);
+      double n_H = 1.0; // TODO
+      log_ne_arr[i] = log(Xe_solution[i]*n_H);
 
       break;
     
@@ -107,9 +113,8 @@ void RecombinationHistory::solve_number_density_electrons(){
   // TODO: Spline the result. Implement and make sure the Xe_of_x, ne_of_x 
   // functions are working
   //=============================================================================
-  //...
-  //...
-  log_Xe_of_x_spline.create(x_array, Xe_arr, "Xe of x Spline");
+  log_Xe_of_x_spline.create(x_array, log_Xe_arr, "Xe of x Spline");
+  log_ne_of_x_spline.create(x_array, log_ne_arr, "ne of x Spline");
 
   Utils::EndTiming("Xe");
 }
@@ -137,8 +142,8 @@ std::pair<double,double> RecombinationHistory::electron_fraction_from_saha_equat
   const double T_b = T_CMB/a;
 
   // Electron fraction and number density
-  double Xe = 0.0;
-  double ne = 0.0;
+  double Xe;
+  double ne;
 
   // number density of baryons - assume no heavier elements,
   // so this is approx. baryon density over number hydrogen mass
@@ -150,6 +155,7 @@ std::pair<double,double> RecombinationHistory::electron_fraction_from_saha_equat
   //=============================================================================
   // Compute Xe and ne from the Saha equation
   //=============================================================================
+  std::cout << "T_b =" << T_b << "\n";
   double S_RHS = 1/n_b*pow((m_e*T_b)/(2*M_PI), 3/2)*exp(-epsilon_0/(k_b*T_b));
   // if R ~ 1
   if (abs(S_RHS) > 4.0/1e-4) {
@@ -245,8 +251,8 @@ void RecombinationHistory::solve_for_optical_depth_tau(){
   //...
   tau_of_x_spline.create(x_array, tau_array, "tau of x spline");
 
+  // g_tilde with a transform applied to all points with tau as input variable
   Vector gtilde_array = Vector(npts);
-
   auto gtilde_func = [&](double x){ return -tau_of_x_spline.deriv_x(x)*exp(-tau_of_x_spline(x)); };
   std::transform(x_array.begin(), x_array.end(), gtilde_array.begin(), gtilde_func);
 
@@ -305,25 +311,11 @@ double RecombinationHistory::ddgddx_tilde_of_x(double x) const{
 }
 
 double RecombinationHistory::Xe_of_x(double x) const{
-
-  //=============================================================================
-  // TODO: Implement
-  //=============================================================================
-  //...
-  //...
-
-  return 0.0;
+  return exp(log_Xe_of_x_spline(x));
 }
 
 double RecombinationHistory::ne_of_x(double x) const{
-
-  //=============================================================================
-  // TODO: Implement
-  //=============================================================================
-  //...
-  //...
-
-  return 0.0;
+  return exp(log_ne_of_x_spline(x));
 }
 
 double RecombinationHistory::get_Yp() const{
@@ -337,19 +329,29 @@ void RecombinationHistory::info() const{
   std::cout << "\n";
   std::cout << "Info about recombination/reionization history class:\n";
   std::cout << "Yp:          " << Yp          << "\n";
+  std::cout << "Saha approx ended at iteration i=" << saha_regime_index << "\n";
   std::cout << std::endl;
 } 
 
 //====================================================
 // Output the data computed to file
 //====================================================
-void RecombinationHistory::output(const std::string filename) const{
+void RecombinationHistory::output(const std::string& filename) const{
   std::ofstream fp(filename.c_str());
   const int npts       = 5000;
   const double x_min   = x_start;
   const double x_max   = x_end;
 
   Vector x_array = Utils::linspace(x_min, x_max, npts);
+  fp << "x"              << "; ";
+  fp << "Xe"             << "; ";
+  fp << "ne"             << "; ";
+  fp << "tau"            << "; ";
+  fp << "dtau_dx"        << "; ";
+  fp << "ddtau_ddx"      << "; ";
+  fp << "g_tilde"        << "; ";
+  fp << "ddg_tilde_ddx";
+  fp << "\n";
   auto print_data = [&] (const double x) {
     fp << x                    << "; ";
     fp << Xe_of_x(x)           << "; ";
@@ -359,7 +361,7 @@ void RecombinationHistory::output(const std::string filename) const{
     fp << ddtauddx_of_x(x)     << "; ";
     fp << g_tilde_of_x(x)      << "; ";
     fp << dgdx_tilde_of_x(x)   << "; ";
-    fp << ddgddx_tilde_of_x(x) << " ";
+    fp << ddgddx_tilde_of_x(x);
     fp << "\n";
   };
   std::for_each(x_array.begin(), x_array.end(), print_data);

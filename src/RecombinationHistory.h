@@ -23,8 +23,11 @@ class RecombinationHistory{
     const double x_end    = Constants.x_end;
     const int num_x_points = Constants.num_x_points;
     
-    // Numbers of points of Xe,ne array (modify as you see fit)
+    // Numbers of points of Xe, ne array (modify as you see fit)
     const int npts_rec_arrays = 4000;
+
+    // iteration index when switching regime - default to last iter because if this is unassigned the approx never ended
+    int saha_regime_index = npts_rec_arrays;
   
     // Xe for when to switch between Saha and Peebles
     const double Xe_saha_limit = 0.99;
@@ -51,6 +54,7 @@ class RecombinationHistory{
 
     // Splines contained in this class
     Spline log_Xe_of_x_spline{"Xe"};
+    Spline log_ne_of_x_spline{"ne"};
     Spline tau_of_x_spline{"tau"}; 
     Spline g_tilde_of_x_spline{"g"};  
 
@@ -69,7 +73,7 @@ class RecombinationHistory{
     void info() const;
 
     // Output some data to file
-    void output(const std::string filename) const;
+    void output(const std::string& filename) const;
 
     // Get functions that we must implement
     double tau_of_x(double x) const;

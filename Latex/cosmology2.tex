@@ -12,34 +12,38 @@
 %                              according to the author-year natbib style
 
 %
-\documentclass[a4paper]{aa}
+\documentclass[a4paper]{aa} % a&a template, on a4 because we're european thank you very much
 
-\usepackage{natbib, twoopt}
+\usepackage{natbib, twoopt} % a&a uses this
 \bibpunct{(}{)}{;}{a}{}{,} % to follow the A&A style
-\usepackage[hyphenbreaks]{breakurl}
 %
-\usepackage{graphicx}
-\usepackage{subcaption}
-\usepackage{lipsum}
-\usepackage{url}
-\usepackage{xcolor}
-\definecolor{cobalt}{rgb}{0.06, 0.2, 0.65}
-\usepackage{subcaption}         % subfigures
+\usepackage{amsmath} % standard for math
+%\usepackage{mathptmx} % change math font (?, might be doing nothing)
+\usepackage{siunitx} % SI units support
+\usepackage{graphicx} % make figures
+\usepackage{subcaption} % make subfigures
+\usepackage{lipsum} % lorem ipsum, a&a examples were using this
+\usepackage{url} % make url links
+\usepackage[hyphenbreaks]{breakurl} % allow breaking urls
+\usepackage{xcolor} % make colour names available (used for links)
+\definecolor{cobalt}{rgb}{0.06, 0.2, 0.65} % new color
+% a&a example stuff
 \usepackage{lscape}             % to rotate a single page table, example in appendix.
                                 % For landscape tables, see the longtable examples.
 \usepackage{placeins}           % useful with \FloatBarrier, to keep 
                                 % onecolumn floats from drifting to the next section
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\usepackage{txfonts}
-\usepackage[varg]{txfonts}
+\usepackage[varg]{txfonts} % change general font as a&a recommends
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage[colorlinks, breaklinks]{hyperref}
+\usepackage[colorlinks, breaklinks]{hyperref} % linking inside pdf, with custom colours and allow wrapping links
+% orange numbers for sections etc, citations in red, urls in blue
 \hypersetup{%
   colorlinks = true,
   linkcolor  = orange,
   citecolor = red,
   urlcolor = blue,
-  pdftitle={Project 1}
+  pdftitle={Cosmology II Project}
 }
 % To add links in your PDF file, use the package "hyperref"
 % with options according to your LaTeX or PDFLaTeX drivers.
@@ -50,16 +54,20 @@
 % and add hyperlinks to citations
 % https://github.com/yangcht/AA-bibstyle-with-hyperlink
 \makeatletter
-\renewcommand*\aa@numarticle{Cosmology II numerical project}
-%\renewcommand*\aa@pageof{, page \thepage{} of \pageref*{LastPage}}
+% fix the page number
+\renewcommand*\aa@pageof{, page \thepage{} of \pageref*{LastPage}}
 % change some other displayed information, this is not a formal A&A paper after all
+\renewcommand*\aa@numarticle{Cosmology II numerical project} % changing article "number" since this isn't published, don't mind the hack
+% display in top box at the beginning
 \renewcommand*\aa@manuscriptname{%
   templated numerical project
   \hspace{\stretch{1}}%
   \copyright UiO \the\year
 }
+% top text on even pages
 \renewcommand*\aa@textidlineempty{{\slshape A\&A template:}\ Cosmology II}
-% for the hyperlinks
+
+% required for the hyperlinks, see https://github.com/yangcht/AA-bibstyle-with-hyperlink
 \newcommandtwoopt{\citeads}[3][][]{\href{http://adsabs.harvard.edu/abs/#3}%
     {\def\hyper@linkstart##1##2{}%
      \let\hyper@linkend\@empty\citealp[#1][#2]{#3}}}
@@ -73,6 +81,11 @@
     {\href{http://adsabs.harvard.edu/abs/#3}
     {\def\hyper@linkstart##1##2{}%
      \let\hyper@linkend\@empty\citeyear[#1][#2]{#3}}}
+
+% custom hack to make eprint command have an actual arxiv link
+\renewcommand*\eprint[2][]{%
+{\tt\if!#1!#2\else{\href{https://arxiv.org/abs/#2}{\ignorespaces#1\arxivprefixesep\ignorespaces#2}}\fi}%
+}
 \makeatother
 
 
