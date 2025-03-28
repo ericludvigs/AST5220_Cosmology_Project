@@ -22,7 +22,10 @@ All relevant information about the project and the different milestones can be f
 
 Compile target `cmb` using [ make cmb ] in terminal, as expected. The [GSL library](ftp://ftp.gnu.org/gnu/gsl/) is required. See below for instructions.
 
-The compiled binary `cmb` used to actually generate output for each Milestone is copied to the respective Milestone X folder. The binary expects to be in the project root folder, and must be moved there before running. Use `$ ./cmb` to run.
+# Running
+The compiled binary `cmb` used to generate output for each Milestone is copied by me to the respective Milestone X folder before delivery. The binary expects to be in the project root folder, and must be moved there before running. Use `$ ./cmb` to run.
+
+If you compile and run at the same time, it should generate `cmb` in the project root folder and run with the most up to date source code automatically.
 
 TODO: Change instructions below as changes are made
 
