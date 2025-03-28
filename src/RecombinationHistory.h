@@ -35,6 +35,9 @@ class RecombinationHistory{
     //===============================================================
     // [1] Computation of Xe (Saha and Peebles equation)
     //===============================================================
+
+    // Compute ne
+    double get_electron_abundance(double Xe) const;
  
     // Compute Xe from the Saha equation
     std::pair<double,double> electron_fraction_from_saha_equation(double x) const;

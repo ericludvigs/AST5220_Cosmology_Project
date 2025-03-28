@@ -1,19 +1,25 @@
 \section{Milestone II}\label{sec:milestone_2}
 With fundamental cosmology established in sec. \ref{sec:milestone_1}, we can now describe the baseline or so-called "background" behaviour of our universe, with a relatively simple evolution of cosmological parameters as the universe expands (refer fig. \ref{fig:milestone_1_Omega_i_of_x}). Now we wish to look backwards from our current time, and compute the path of photons travelling towards a current-day observer from the early universe.
 
-In order to study the behaviour of photons and thermal evolution of the early universe, we consider it to be a large continuous fluid, specifically a hot plasma. The thermodynamics and statistical mechanics for this are described in \citet[][chap.~x]{baumannLectureNotesCosmology2017} and \citet[][chap.~x]{dodelsonModernCosmology2003}, while the specific Boltzmann formalism utilized is that of \citet[][]{wintherCosmologyIILecture2024}, \href{https://cmb.wintherscoming.no/theory_thermodynamics.php#thermo}{available here}.
+In order to study the behaviour of photons and thermal evolution of the early universe, we consider it to be a large continuous fluid, specifically a hot plasma. The thermodynamics and statistical mechanics for this are described in \citet[chap.~3]{baumannLectureNotesCosmology2017} and \citet[chap.~3,4]{dodelsonModernCosmology2003}, while the specific Boltzmann formalism utilized is that of \citet{wintherCosmologyIILecture2024}, \href{https://cmb.wintherscoming.no/theory_thermodynamics.php#thermo}{available here}.
 
 \subsection{Theory}
-The theory behind this milestone.
+Considering the early universe, there are three main interactions between particle species of interest, Couloumb scattering (\ref{eq:couloumb_scattering}), Thomson scattering (\ref{eq:thomson_scattering}), and the formation/ionization of Hydrogen (\ref{eq:hydrogen_capture}).
 
-Start with eqs. \ref{eq:tau_integral} and \ref{eq:tau_ODE}.
+\begin{align}
+e^- + p^+ &\rightleftharpoons e^- + p^+ \label{eq:couloumb_scattering} \\
+e^- + \gamma &\rightleftharpoons e^- + \gamma \label{eq:thomson_scattering} \\
+e^- + p^+ &\rightleftharpoons H + \gamma \label{eq:hydrogen_capture}
+\end{align}
+
+Start with eqs. \ref{eq:tau_integral} \citep[sec.~4.4]{dodelsonModernCosmology2003} and \ref{eq:tau_ODE}.
 
 \begin{equation}\label{eq:tau_integral}
-\tau(\eta) = \int_{\eta}^{\eta_0} n_e \sigma_T a d\eta' \quad \text{(unitless)}
+\tau(\eta) = \int_{\eta}^{\eta_0} n_e \sigma_T a d\eta' \quad \text{[dimensionless]}
 \end{equation}
 
 \begin{equation}\label{eq:tau_ODE}
-\boxed{\tau' = \frac{d\tau}{dx} = -\frac{c n_e \sigma_T }{H}}
+\boxed{\tau' = \frac{d\tau}{dx} = -\frac{c n_e \sigma_T }{H}} \quad \text{[dimensionless]}
 \end{equation}
 
 Also the visibility function \ref{eq:visibility_function}.
@@ -30,23 +36,32 @@ We wish to compute the fractional electron density given by \ref{eq:fractional_e
 \end{equation}
 
 
-In order to calculate the electron density, we can use the Saha approximation given in eq. \ref{eq:saha_approx}. This is valid for large temperatures $T$, early in the universe. However, as the temperature falls the Saha approximation continues to predict a simple exponential decay of free electrons as they all become bound to hydrogen (and heavier elements), but this assumes the interaction \ref{TODO} continues to be perfectly efficient, which is not the case in practice. See fig. 3.8 in \citet[sec. 3.3.3]{baumannLectureNotesCosmology2017}. We seek to recreate this figure with a numerical simulation.
+In order to calculate the electron density, we can use the Saha approximation given in eq. \ref{eq:saha_approx}. This is valid for large temperatures $T$, early in the universe. However, as the temperature falls the Saha approximation continues to predict a simple exponential decay of free electrons as they all become bound to hydrogen (and heavier elements), but this assumes the interaction \ref{eq:hydrogen_capture} continues to be perfectly efficient, which is not the case in practice. See fig. 3.8 in \citet[sec. 3.3.3]{baumannLectureNotesCosmology2017}. We seek to recreate this figure with a numerical simulation.
 
 \begin{equation}\label{eq:saha_approx}
-\boxed{\frac{X_e^2}{1-X_e} = \frac{1}{n_b} \left(\frac{m_e T_b}{2\pi}\right)^{3/2} e^{-\frac{\epsilon_0}{k_b T_b}}} \quad {(X_e \; \rm dimensionless)}
+\begin{aligned}
+\Aboxed{\frac{X_e^2}{1-X_e} = \frac{1}{n_b} \left(\frac{m_e T_b}{2\pi}\right)^{3/2} e^{-\frac{\epsilon_0}{k_b T_b}}} \quad [X_e \; \rm dimensionless]
+\end{aligned}
 \end{equation}
 
-In order to properly simulate the change in electron density, we can switch to the more accurate Peebles equation given as eq. \ref{eq:peebles_equation} (CITE Peebles, Zel'dovich), with supporting definitions in eq. \ref{eq:peebles_quantities_definition}. This equation is numerically unstable when solved for very large $T$ (early on), but is perfectly appropriate when the Saha approximation stops being accurate.
+In order to properly simulate the change in electron density, we can switch to the more accurate Peebles equation given as eq. \ref{eq:peebles_equation} \citep{peeblesRecombinationPrimevalPlasma1968,zeldovichRecombinationHydrogenHot1969}, with supporting definitions in eq. \ref{eq:peebles_quantities_definition}. This equation is numerically unstable when solved for very large $T$ (early on), but is perfectly appropriate around when the Saha approximation stops being accurate.
 
 \begin{equation}\label{eq:peebles_equation}
-\boxed{\frac{dX_e}{dx} = \frac{C_r(T_b)}{H} \left[\beta(T_b)(1-X_e) - n_H \alpha^{(2)}(T_b)X_e^2\right]}\,,
+\begin{aligned}
+\boxed{\frac{dX_e}{dx} = \frac{C_r(T_b)}{H} \left[\beta(T_b)(1-X_e) - n_H \alpha^{(2)}(T_b)X_e^2\right]} \\
+{[X_e \; \rm dimensionless]}
+\end{aligned}
 \end{equation}
 
-We will also calculate the so-called "sound horizon at decoupling", the total distance a sound-wave in the primordial photon-baryon plasma can propagate from the Big Bang until photons decouple. This is slightly smaller than the optical depth , since photons have a sound $c/\sqrt{3}$
+We will also calculate the so-called "sound horizon at decoupling", the total distance a sound-wave in the primordial photon-baryon plasma can propagate from the Big Bang until photons decouple. Pure photons have a sound speed $c/\sqrt{3}$, while sound-waves in the primordial plasma follow the slightly lower $c_s = c \sqrt{\frac{R}{3(1+R)}}$, with $R = \frac{4\Omega_{\gamma 0}}{3\Omega_{b 0} a}$. Thus we end up with the sound-horizon given in eq. \ref{eq:sound_horizon}.
 
-\begin{equation}
-\boxed{s(x) = \int_0^{a} \frac{c_s dt}{a} = \int_{-\infty}^{x} \frac{c_s dx}{\mathcal{H}} \to \frac{ds(x)}{dx} = \frac{c_s}{\mathcal{H}},\,\,\,\text{with}\,\,\,s(x_{\rm ini}) = \frac{c_s(x_{\rm ini})}{\mathcal{H}(x_{\rm ini})} }
+\begin{equation}\label{eq:sound_horizon}
+\begin{aligned}
+\Aboxed{s(x) &= \int_0^{a} \frac{c_s dt}{a} = \int_{-\infty}^{x} \frac{c_s dx}{\mathcal{H}} \to \frac{ds(x)}{dx} = \frac{c_s}{\mathcal{H}}}\:,\\
+\text{with}\,\,\,&s(x_{\rm ini}) = \frac{c_s(x_{\rm ini})}{\mathcal{H}(x_{\rm ini})} \quad {\text{[unit \unit{m}]}}
+\end{aligned}
 \end{equation}
+
 
 \subsection{Implementation details}
 Something about the numerical work.

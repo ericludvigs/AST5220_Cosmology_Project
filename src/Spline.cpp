@@ -124,7 +124,7 @@ void Spline::create(
   if(x.size() != y.size()){
     std::cout << "Error Spline::create [" << splinename << "]: x and y array must have the same number of elements\n";
     throw SPLINE_ERROR;
-  } 
+  }
   create(x.data(), y.data(), int(x.size()), splinename, interpoltype);
 }
 

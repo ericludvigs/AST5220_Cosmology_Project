@@ -50,7 +50,7 @@ int main(int argc, char **argv){
   
   // Solve the recombination history
   RecombinationHistory rec(&cosmo, Yp);
-  std::cout << "Start solving for recombination";
+  std::cout << "Start solving for recombination \n";
   rec.solve();
   rec.info();
 
