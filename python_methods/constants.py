@@ -26,6 +26,9 @@ Mpc         = 3.08567758e22 * m           # Megaparsec
 Gpc         = 1000 * Mpc                  # Gigaparsec
 eV          = 1.60217653e-19 * J          # Electronvolt
 
+years       = 365.24*24*60*60*s           # conversion factor seconds to years
+gigayears   = 10**9 * years               # conversion factor seconds to gigayears
+
 # Physical constants
 k_b         = 1.38064852e-23 * J/K        # Bolzmanns constant
 m_e         = 9.10938356e-31 * kg         # Mass of electron

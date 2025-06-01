@@ -53,8 +53,8 @@ extern struct ConstantsAndUnits {
   const int    num_x_points = 100;
 
   // Include polarization and/or neutrinos?
-  const bool polarization  = true;
-  const bool neutrinos     = true;
+  const bool polarization  = false;
+  const bool neutrinos     = false;
 
   // For integration of perturbations (number of equations and positions in arrays)
   const int n_scalars           = 5;
@@ -62,7 +62,7 @@ extern struct ConstantsAndUnits {
   const int n_ell_thetap        = 8 * polarization;
   const int n_ell_neutrinos     = 8 * neutrinos;
   const int n_ell_tot_full      = n_scalars + n_ell_theta + n_ell_thetap + n_ell_neutrinos;
-  const int ind_deltacdm        = 0; 
+  const int ind_deltacdm        = 0;
   const int ind_deltab          = 1;
   const int ind_vcdm            = 2;
   const int ind_vb              = 3;
@@ -77,7 +77,7 @@ extern struct ConstantsAndUnits {
   const int n_ell_thetap_tc     = 0;
   const int n_ell_neutrinos_tc  = n_ell_neutrinos;
   const int n_ell_tot_tc        = n_scalars_tc + n_ell_theta_tc + n_ell_thetap_tc + n_ell_neutrinos;
-  const int ind_deltacdm_tc     = 0; 
+  const int ind_deltacdm_tc     = 0;
   const int ind_deltab_tc       = 1;
   const int ind_vcdm_tc         = 2;
   const int ind_vb_tc           = 3;
@@ -106,6 +106,9 @@ namespace Utils {
   
   // Generate an array with n equispaced points from xmin to xmax
   std::vector<double> linspace(double xmin, double xmax, int num);
+
+  // Generate an array with n log-spaced points from xmin to xmax
+  std::vector<double> logspace(double xmin, double xmax, int num, double base);
   
   // Take the derivative of a function (simple 2pt stencil)
   std::vector<double> derivative(std::vector<double> &x, std::vector<double> &f);

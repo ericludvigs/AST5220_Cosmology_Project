@@ -1,7 +1,8 @@
+%\FloatBarrier
 \section{Milestone II}\label{sec:milestone_2}
 With fundamental cosmology established in sec. \ref{sec:milestone_1}, we can now describe the baseline or so-called "background" behaviour of our universe, with a relatively simple evolution of cosmological parameters as the universe expands (refer fig. \ref{fig:milestone_1_Omega_i_of_x}). Now we wish to look backwards from our current time, and compute the path of photons travelling towards a current-day observer from the early universe.
 
-In order to study the behaviour of photons and thermal evolution of the early universe, we consider it to be a large continuous fluid, specifically a hot plasma. The thermodynamics and statistical mechanics for this are described in \citet[chap.~3]{baumannLectureNotesCosmology2017} and \citet[chap.~3,4]{dodelsonModernCosmology2003}, while the specific Boltzmann formalism utilized is that of \citet{wintherCosmologyIILecture2024}, \href{https://cmb.wintherscoming.no/theory_thermodynamics.php#thermo}{available here}.
+In order to study the behaviour of photons and thermal evolution of the early universe, we consider it to be a large continuous fluid, specifically a hot plasma. The thermodynamics and statistical mechanics for this are described in \citet[chap.~3]{baumannLectureNotesCosmology2017} and \citet[chap.~3, 4]{dodelsonModernCosmology2003}, while the specific Boltzmann formalism utilized is that of \citet{wintherCosmologyIILecture2024}, \href{https://cmb.wintherscoming.no/theory_thermodynamics.php#thermo}{available here}.
 
 \subsection{Theory}
 Considering the early universe, there are three main interactions between particle species of interest, Couloumb scattering (\ref{eq:couloumb_scattering}), Thomson scattering (\ref{eq:thomson_scattering}), and the formation/ionization of Hydrogen (\ref{eq:hydrogen_capture}).
@@ -64,7 +65,44 @@ We will also calculate the so-called "sound horizon at decoupling", the total di
 
 
 \subsection{Implementation details}
-Something about the numerical work.
+%Something about the numerical work.
 
 \subsection{Results}
-Show and discuss the results.
+See figs. \ref{fig:milestone_2_Xe}, \ref{fig:milestone_2_tau_and_derivs}, \ref{fig:milestone_2_g_tilde}, \ref{fig:milestone_2_g_tilde_deriv}, \ref{fig:milestone_2_g_tilde_double_deriv}.
+
+Simulated recombination happens at $x = -3.452$, giving a recombination time (cosmic time) of $96\, 273\, 898.543$ years. This corresponds to a redshift $z = 33.908$. However, the actual expected redshift should be $z=1100$, and the age of the universe $378\, 000$ years, so this is extremely late. This is also visible from plots like fig. \ref{fig:milestone_2_Xe}. I have not figured out where the bug is for this one, but it affects all later plots.
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=0.4\textwidth]{../Milestone 2/Plots/Xe.png}
+\caption{Fractional electron density. Early times with density about 1 correspond to a high-energy universe where any hydrogen that forms instantly gets reionized by random photons. We see the expected exponential drop once the temperature has dropped sufficiently and recombination kicks in, with the dampening provided by Peebles making $X_e$ converge to some non-zero value as the likelihood of proton-electron interactions drop. This would not be modelled by a simple implementation of just the Saha approximation. However, the extremely late recombination is unexpected, so the electron fraction does not seem to have stabilized by the present day which cannot be correct.}
+\label{fig:milestone_2_Xe}
+\end{figure}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=0.4\textwidth]{../Milestone 2/Plots/tau_and_derivs.png}
+\caption{The optical depth function and its derivatives, which evolves as expected, falling steadily as the universe expands until recombination, which is adequately represented by the point where we switch from the Saha approximation, noted in the plot. The bump in optical density is provided by all the new hydrogen forming. However, the falloff once the universe becomes transparent is not as sharp as expected, and recombination happens too late anyway.}
+\label{fig:milestone_2_tau_and_derivs}
+\end{figure}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=0.4\textwidth]{../Milestone 2/Plots/g_tilde.png}
+\caption{The visibility function is a probability density function (and thus the integral sums to 1, which lines up with what we see), and represents the likelihood that a photon was last scattered at time $x$ before free flying to hit a modern-day observer. The clear peak corresponds to recombination, where the universe becomes transparent as free electrons are bound into hydrogen, and represents the surface of last scattering. It is very unlikely that photons before this point flew unimpeded, as they likely scattered off the dense medium before this (see fig. \ref{fig:milestone_2_tau_and_derivs}). However, the peak is not quite as defined as expected.}
+\label{fig:milestone_2_g_tilde}
+\end{figure}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=0.4\textwidth]{../Milestone 2/Plots/g_tilde_deriv.png}
+\caption{First derivative of the visibility function. Has the expected rough shape.}
+\label{fig:milestone_2_g_tilde_deriv}
+\end{figure}
+
+\begin{figure}[h!tbp]
+\centering
+\includegraphics[width=0.4\textwidth]{../Milestone 2/Plots/g_tilde_double_deriv.png}
+\caption{Second derivative of the visibility function. This one looks weird, especially the early bump around $x=-5$.}
+\label{fig:milestone_2_g_tilde_double_deriv}
+\end{figure}

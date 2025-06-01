@@ -28,6 +28,7 @@ class RecombinationHistory{
 
     // iteration index when switching regime - default to last iter because if this is unassigned the approx never ended
     int saha_regime_index = npts_rec_arrays;
+    double saha_regime_exit_x;
   
     // Xe for when to switch between Saha and Peebles
     const double Xe_saha_limit = 0.99;
@@ -37,7 +38,7 @@ class RecombinationHistory{
     //===============================================================
 
     // Compute ne
-    double get_electron_abundance(double Xe) const;
+    double get_electron_abundance(double x, double Xe) const;
  
     // Compute Xe from the Saha equation
     std::pair<double,double> electron_fraction_from_saha_equation(double x) const;
@@ -58,8 +59,10 @@ class RecombinationHistory{
     // Splines contained in this class
     Spline log_Xe_of_x_spline{"Xe"};
     Spline log_ne_of_x_spline{"ne"};
-    Spline tau_of_x_spline{"tau"}; 
-    Spline g_tilde_of_x_spline{"g"};  
+    Spline tau_of_x_spline{"tau"};
+    Spline dtau_of_dx_spline{"dtau_dx"};
+    Spline g_tilde_of_x_spline{"g"};
+    Spline sound_horizon_of_x_spline{"s"};
 
   public:
 
@@ -87,6 +90,7 @@ class RecombinationHistory{
     double ddgddx_tilde_of_x(double x) const;
     double Xe_of_x(double x) const;
     double ne_of_x(double x) const;
+    double sound_horizon_of_x(double x) const;
     double get_Yp() const;
 };
 

@@ -130,7 +130,7 @@ if show_plots:
     plt.show()
 
 # conversion factor seconds to gigayears
-gigayears = 10**9 * 365.24 * 24 * 60 * 60 * constants.s
+gigayears = constants.gigayears
 
 # conformal time
 fig = plt.figure()

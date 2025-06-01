@@ -1,11 +1,10 @@
+%\FloatBarrier
 \section{Milestone I}\label{sec:milestone_1}
-Some introduction about what it is all about.
+In this milestone, we establish the so-called background cosmology of our universe for the simulation. We focus on some rough supernova fitting to give an initial target for the spacetime metric and relative energy densities we will work with.
 
-Cite: \citet{baumannLectureNotesCosmology2017}, \citet{dodelsonModernCosmology2003} and \citep{callinHowCalculateCMB2006, wintherCosmologyIILecture2024, huCompleteTreatmentCMB1998}
+Citations: \citet{baumannLectureNotesCosmology2017}, \citet{dodelsonModernCosmology2003} and \citep{callinHowCalculateCMB2006, wintherCosmologyIILecture2024, huCompleteTreatmentCMB1998}
 
 \subsection{Theory}
-This study is baselined on the common Lambda-CDM model \citep[chap. 1][sec. 1.6]{dodelsonModernCosmology2021}, with a {Friedmann}-{Robertson}-{Walker} metric for spacetime.
-
 The scale factor $a$ is used as the main time-ish variable - $a$ is not a time but since time, size of the universe, and cosmic distances are all closely related it can fulfill the role of a time variable nonetheless, and describe the evolution of our simulated universe \citep{wintherCosmologyIILecture2024}. The scale factor is a dimensionless quantity.
 
 For numerical work we use the variable $x \equiv \log a$, this is for numerical stability over large timescales with highly variable quantities. 
@@ -34,8 +33,8 @@ A_s &= 2.1\cdot 10^{-9}, \\
 Y_p &= 0.245, \\
 z_{\rm reion} &= 8, \\
 \Delta z_{\rm reion} &= 0.5, \\
-z_{\rm He reion} &= 3.5, \\
-\Delta z_{\rm He reion} &= 0.5.
+z_{\rm He-reion} &= 3.5, \\
+\Delta z_{\rm He-reion} &= 0.5.
 \end{aligned}
 \end{equation}
 
@@ -60,59 +59,67 @@ For numerical work, we calculate the constant $H_0$ by adding the right units to
 H_0 = 100 * h \enspace \unit{km.s^{-1}.Mpc^{-1}}
 \end{equation}
 
+\subsubsection{More stuff}
+
+Paper with supernova fitting data \citet{betouleImprovedCosmologicalConstraints2014}.
+
 Equation for critical density of the universe today \ref{eq:critical_density}
 
 \begin{equation}\label{eq:critical_density}
 \rho_{c0} \equiv \frac{3H_0^2}{8\pi G} \enspace \unit{kg.m^{-3}}
 \end{equation}
 
-\subsubsection{More stuff}
-
-Paper with supernova fitting data \citet{betouleImprovedCosmologicalConstraints2014}.
-
 \begin{equation}\label{eq:t_of_x}
 t(x) = \int_0^a \frac{da}{aH} = \int_{-\infty}^x \frac{dx}{H(x)} \quad [\text{unit \unit{s}, can convert to \unit{\giga yr} etc.}]
 \end{equation}
 
 \subsection{Implementation details}
-Something about the numerical work.
+We run a Markov chain Monte Carlo simulation on a large number of parameter combinations, in order to test numerical fitting to real supernova data. This ensures our background parameters and simulation is sensible, before we add perturbations to simulate a dynamic universe development through time.
 
 \subsection{Results}
-Show and discuss the results.
+See figs. \ref{fig:milestone_1_cosmic_vs_conformal_time}, \ref{fig:milestone_1_luminosity_distance}, \ref{fig:milestone_1_etaHp_over_c_of_x}, \ref{fig:milestone_1_Omega_i_of_x}, \ref{fig:milestone_1_supernovafitting_confidence_regions}. Overall these figures seem ok, except that the supernova fitting in fig. \ref{fig:milestone_1_luminosity_distance} misses systematically, especially at the beginning. There is probably some bug involved, since the shape seems correct.
 
-See figs. \ref{fig:milestone_1_cosmic_vs_conformal_time}, \ref{fig:milestone_1_luminosity_distance}, \ref{fig:milestone_1_etaHp_over_c_of_x}, \ref{fig:milestone_1_Omega_i_of_x}, \ref{fig:milestone_1_supernovafitting_confidence_regions}.
+Best-fit parameters are
+Best h: 0.706857,
+Best H0: 70.6857 km/s/Mpc,
+Best OmegaM: 0.268287,
+Best OmegaK: 1.84807e-05,
+Best OmegaLambda: 0.731694519
+
+Via the cosmic time, the calculated current age of the Universe is: $13.849 * 10^9$ yrs.
+This is pretty close to 13.79 billion years, the current accepted estimate.
 
 \begin{figure}[h!tbp]
 \centering
 \includegraphics[width=0.4\textwidth]{../Milestone 1/Plots/cosmic_vs_conformal_time.png}
-\caption{Caption}
+\caption{Cosmic and conformal time plotted against the expansion of the universe. The cosmic time evolves almost linearly, as we'd expect.}
 \label{fig:milestone_1_cosmic_vs_conformal_time}
 \end{figure}
 
 \begin{figure}[h!tbp]
 \centering
 \includegraphics[width=0.4\textwidth]{../Milestone 1/Plots/luminosity_distance.png}
-\caption{Caption}
+\caption{Luminosity distance against redshift, with larger redshifts representing objects further away. This evolution is strongly related to the Hubble parameter and Hubble's law.}
 \label{fig:milestone_1_luminosity_distance}
 \end{figure}
 
 \begin{figure}[h!tbp]
 \centering
 \includegraphics[width=0.4\textwidth]{../Milestone 1/Plots/etaHp_over_c_of_x.png}
-\caption{Caption}
+\caption{A plot of the conformal Hubble factor $\mathcal{H} = aH$, scaled against the analytical solution of the Friedmann equation in the radiation dominated era ($\eta \simeq \frac{c}{\mathcal{H}}$). This should converge to $1$ the more radiation dominated the universe is, and shows the correct exponential decay compared to the decay of relativistic matter seen in fig. \ref{fig:milestone_1_Omega_i_of_x}, if not the right value at the beginning of the plot.}
 \label{fig:milestone_1_etaHp_over_c_of_x}
 \end{figure}
 
 \begin{figure}[h!tbp]
 \centering
 \includegraphics[width=0.4\textwidth]{../Milestone 1/Plots/Omega_i_of_x.png}
-\caption{Caption}
+\caption{The evolution of the various energy components from the Friedmann equation. We clearly see the three eras of radiation-domination, matter-domination, and dark energy beginning to dominate right around the present day, as expected. For reference, the sum of the components is calculated at every point and plotted at the top - this exeeding 100\% energy at any point would be very problematic, but it stays perfectly at 1.}
 \label{fig:milestone_1_Omega_i_of_x}
 \end{figure}
 
 \begin{figure}[h!tbp]
 \centering
 \includegraphics[width=0.4\textwidth]{../Milestone 1/Plots/supernovafitting_confidence_regions.png}
-\caption{Caption}
+\caption{A scatter plot of the various parameter combinations that were attempted for fitting by the MCMC. Parameters outside the blue area are extremely unlikely. For reference, the combinations corresponding to a spatially flat universe are the ones on the dotted black line. Since we know observationally that our universe is close to flat, a dark energy content of about 60-80\% is likely, with a corresponding matter density of about 20-40\%.}
 \label{fig:milestone_1_supernovafitting_confidence_regions}
 \end{figure}

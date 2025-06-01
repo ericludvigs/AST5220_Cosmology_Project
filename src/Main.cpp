@@ -56,9 +56,6 @@ int main(int argc, char **argv){
 
   // Output recombination quantities
   rec.output("results/recombination.csv");
-  
-  // Remove when module is completed
-  return 0;
 
   //=========================================================================
   // Module III
@@ -70,8 +67,14 @@ int main(int argc, char **argv){
   pert.info();
   
   // Output perturbation quantities
-  double kvalue = 0.01 / Constants.Mpc;
-  pert.output(kvalue, "perturbations_k0.01.txt");
+  double kvalue_intermediate = 0.01 / Constants.Mpc;
+  pert.output(kvalue_intermediate, "results/perturbations_k0_01.csv");
+
+  double kvalue_small = 0.001 / Constants.Mpc;
+  pert.output(kvalue_small, "results/perturbations_k0_001.csv");
+
+  double kvalue_large = 0.1 / Constants.Mpc;
+  pert.output(kvalue_large, "results/perturbations_k0_1.csv");
   
   // Remove when module is completed
   return 0;

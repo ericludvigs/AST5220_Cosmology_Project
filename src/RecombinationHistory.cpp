@@ -32,7 +32,7 @@ void RecombinationHistory::solve_number_density_electrons(){
   Utils::StartTiming("Xe");
   
   //=============================================================================
-  // TODO: Set up x-array and make arrays to store X_e(x) and n_e(x) on
+  // Set up x-array and make arrays to store X_e(x) and n_e(x) on
   //=============================================================================
   Vector x_array = Utils::linspace(x_start, x_end, npts_rec_arrays);
   Vector log_Xe_arr  = Vector(npts_rec_arrays);
@@ -42,7 +42,7 @@ void RecombinationHistory::solve_number_density_electrons(){
   bool saha_regime = true;
   for(int i = 0; i < npts_rec_arrays; i++){
     //==============================================================
-    // TODO: Get X_e from solving the Saha equation so
+    // Get X_e from solving the Saha equation
     // implement the function electron_fraction_from_saha_equation
     //==============================================================
     auto Xe_ne_data = electron_fraction_from_saha_equation(x_array[i]);
@@ -57,6 +57,7 @@ void RecombinationHistory::solve_number_density_electrons(){
     if(Xe_current < Xe_saha_limit) {
       saha_regime = false;
       saha_regime_index = i;
+      saha_regime_exit_x = x_array[i];
       std::cout << "exited saha regime at i=" << saha_regime_index << "\n";
       std::cout << "current electron fraction Xe = " << Xe_current << "\n";
       std::cout << std::endl;
@@ -91,11 +92,9 @@ void RecombinationHistory::solve_number_density_electrons(){
       };
       
       //=============================================================================
-      // TODO: Set up IC, solve the ODE and fetch the result 
+      // Set up IC, solve the ODE and fetch the result
       //=============================================================================
-      //...
-      //...
-      double Xe_ini = (Constants.c*exp(x_start)); // TODO:
+      double Xe_ini = Xe_current;
       Vector y_ic{Xe_ini};
 
       peebles_Xe_ode.solve(dXedx, peebles_x_array, y_ic);
@@ -110,14 +109,12 @@ void RecombinationHistory::solve_number_density_electrons(){
       //std::cout << "log_Xe_arr: " << log_Xe_arr.size() << "\n";
 
       // make array of same length as xe solution (not as long as the full xe array)
-      Vector ne_arr_solution = Vector(Xe_solution.begin(), Xe_solution.end());
+      auto ne_arr_solution = Vector(Xe_solution.begin(), Xe_solution.end());
       // apply the electron abundance function to every point of xe
-      std::transform(
-        Xe_solution.begin(),
-        Xe_solution.end(),
-        ne_arr_solution.begin(),
-        std::bind(&RecombinationHistory::get_electron_abundance, this, std::placeholders::_1)
-      );
+      // count up the rest of the points that remain in loop
+      for(int j = 0; j < ne_arr_solution.size(); j++) {
+        ne_arr_solution[j] = get_electron_abundance(peebles_x_array[j], Xe_solution[j]);
+      }
       // take the log for splining
       auto log_ne_arr_solution = log(ne_arr_solution);
       // overwrite our vector with new info
@@ -145,7 +142,8 @@ void RecombinationHistory::solve_number_density_electrons(){
 //====================================================
 // Function to specifically get n_e
 //====================================================
-double RecombinationHistory::get_electron_abundance(const double Xe) const {
+double RecombinationHistory::get_electron_abundance(const double x, const double Xe) const {
+  const double a           = exp(x);
   // Physical constants
   const double G           = Constants.G;
   const double m_H         = Constants.m_H;
@@ -157,10 +155,10 @@ double RecombinationHistory::get_electron_abundance(const double Xe) const {
   // number density of baryons - assume no heavier elements,
   // so this is approx. baryon density over number hydrogen mass
   const double rho_c0 = (3.0)/(8.0*M_PI*G)*pow(H0, 2.0);
-  const double rho_b = rho_c0 * OmegaB0;
+  const double rho_b = (rho_c0 * OmegaB0)/pow(a, 3);
   const double n_b = rho_b/m_H;
   // approximation made
-  const double n_H = n_b;
+  const double n_H = (1-Yp)*n_b;
 
   // from definition
   const double ne = Xe * n_H;
@@ -195,7 +193,7 @@ std::pair<double,double> RecombinationHistory::electron_fraction_from_saha_equat
   // number density of baryons - assume no heavier elements,
   // so this is approx. baryon density over number hydrogen mass
   const double rho_c0 = (3.0)/(8.0*M_PI*G)*pow(H0, 2.0);
-  const double rho_b = rho_c0 * OmegaB0;
+  const double rho_b = (rho_c0 * OmegaB0)/pow(a, 3);
   const double n_b = rho_b/m_H;
   //=============================================================================
   // Compute Xe and ne from the Saha equation
@@ -222,7 +220,7 @@ std::pair<double,double> RecombinationHistory::electron_fraction_from_saha_equat
     Xe = (S_RHS/2.0)*(-1 + 1 + (1.0/2.0)*(4.0/S_RHS));
   }
 
-  ne = get_electron_abundance(Xe);
+  ne = get_electron_abundance(x, Xe);
 
   return std::pair<double,double>(Xe, ne);
 }
@@ -267,7 +265,7 @@ int RecombinationHistory::rhs_peebles_ode(double x, const double *Xe, double *dX
   double beta_tb = beta_tb_no_exp * exp(-epsilon_0_kb_tb);
   double beta_2_tb = beta_tb_no_exp * exp(-(1.0/4.0)*epsilon_0_kb_tb); // condensed exponential from the 2 betas
 
-  double n_b = (1-Yp) * (3*pow(H0, 2)*OmegaB0)/(8*M_PI*G*m_H*pow(a, 3));
+  double n_b = (3*pow(H0, 2)*OmegaB0)/(8*M_PI*G*m_H*pow(a, 3));
   double n_H = (1-Yp) * n_b;
   double n_1s = (1-X_e) * n_H;
 
@@ -291,46 +289,118 @@ void RecombinationHistory::solve_for_optical_depth_tau(){
   Utils::StartTiming("opticaldepth");
 
   // Set up x-arrays to integrate over. We split into three regions as we need extra points in reionisation
+  // redshift given to happen around z = 10 ish
+  // which is x = -2.34 ish
   const int npts = 1000;
-  Vector x_array = Utils::linspace(x_start, x_end, npts);
+  const double x_just_before_reion = -3;
+  const double x_just_after_reion = -2;
+  // small addon to prevent final array from having the same point twice
+  const double x_epsilon = 1e-4;
+  Vector x_before_reion_array = Utils::linspace(x_start, x_just_before_reion-x_epsilon, npts);
+  Vector x_during_reion_array = Utils::linspace(x_just_before_reion, x_just_after_reion, npts);
+  Vector x_after_reion_array = Utils::linspace(x_just_after_reion+x_epsilon, x_end, npts);
+  // concatenate
+  Vector x_array;
+  x_array.reserve( x_before_reion_array.size() + x_during_reion_array.size() + x_after_reion_array.size() ); // preallocate memory
+  x_array.insert( x_array.end(), x_before_reion_array.begin(), x_before_reion_array.end() );
+  x_array.insert( x_array.end(), x_during_reion_array.begin(), x_during_reion_array.end() );
+  x_array.insert( x_array.end(), x_after_reion_array.begin(), x_after_reion_array.end() );
+
+  // make a reversed x array
+  // std::cout << "x array" << "\n";
+  // for (auto i: x_array)
+  //   std::cout << i << ' ';
+  // std::cout << "\n";
+
+  Vector reverse_x_array = Vector(npts*3);
+  std::reverse_copy(x_array.begin(), x_array.end(), reverse_x_array.begin());
+
+  // std::cout << "reversed x array" << "\n";
+  // for (auto i: reverse_x_array)
+  //   std::cout << i << ' ';
+  // std::cout << "\n";
+
+
+  // all in one go
+  //Vector x_array = Utils::linspace(x_start, x_end, npts);
+  //Vector reverse_x_array = Utils::linspace(x_end, x_start, npts);
 
   // The ODE system dtau/dx, dtau_noreion/dx and dtau_baryon/dx
   ODEFunction dtaudx = [&](double x, const double *tau, double *dtaudx){
 
     //=============================================================================
-    // TODO: Write the expression for dtaudx
+    // the expression for dtaudx
     //=============================================================================
-    //...
-    //...
-
+    const double H = cosmo->H_of_x(x);
     // Set the derivative for photon optical depth
-    dtaudx[0] = 1.0;
+    dtaudx[0] = -(Constants.c * ne_of_x(x) * Constants.sigma_T)/(H);
 
     return GSL_SUCCESS;
   };
 
   //=============================================================================
-  // TODO: Set up and solve the ODE and make tau splines
+  // Set up and solve the ODE
   //=============================================================================
-  double tau_ini = (Constants.c*exp(x_start)); // TODO: this
+  // by starting at x = 0 (today), we know that tau(0) = 0
+  double tau_ini = 0.0;
   Vector y_ic{tau_ini};
 
   ODESolver tau_ode;
-  tau_ode.solve(dtaudx, x_array, y_ic);
+  tau_ode.solve(dtaudx, reverse_x_array, y_ic);
   auto tau_array = tau_ode.get_data_by_component(0);
+  // reverse array to match normal x
+  std::reverse(tau_array.begin(), tau_array.end());
 
   //=============================================================================
-  // TODO: Compute visibility functions and spline everything
+  // Set up and solve sound horizon ODE
   //=============================================================================
-  //...
+  // lambda function for sound wave speed
+  auto c_s = [&](const double x) {
+    const double omega_gamma0 = cosmo->get_Omega_gamma(0.0);
+    const double omega_b0 = cosmo->get_Omega_B(0.0);
+    const double a = exp(x);
+    const double R = (4*omega_gamma0)/(3*omega_b0*a);
+    return Constants.c * sqrt((R)/(3*(1+R)));
+  };
+  // The ODE system dtau/dx, dtau_noreion/dx and dtau_baryon/dx
+  ODEFunction dsdx = [&](double x, const double *s, double *dsdx){
+
+    //=============================================================================
+    // the expression for dsdx
+    //=============================================================================
+    const double Hp = cosmo->Hp_of_x(x);
+    // Set the derivative for photon optical depth
+    dsdx[0] = (c_s(x))/(Hp);
+
+    return GSL_SUCCESS;
+  };
+
+  double s_ini = c_s(x_start)/(cosmo->Hp_of_x(x_start));
+  Vector s_ic{s_ini};
+
+  ODESolver s_ode;
+  s_ode.solve(dsdx, x_array, s_ic);
+  auto s_array = s_ode.get_data_by_component(0);
+
+  //=============================================================================
+  // Compute visibility functions and spline everything
+  //=============================================================================
   tau_of_x_spline.create(x_array, tau_array, "tau of x spline");
 
+  // use analytical derivation
+  auto dtau_dx_array = Vector(3*npts);
+  auto dtau_func = [&](const double x){ return -(Constants.c * ne_of_x(x) * Constants.sigma_T)/(cosmo->H_of_x(x)); };
+  std::transform(x_array.begin(), x_array.end(), dtau_dx_array.begin(), dtau_func);
+  dtau_of_dx_spline.create(x_array, dtau_dx_array, "dtau of dx spline");
+
   // g_tilde with a transform applied to all points with tau as input variable
-  Vector gtilde_array = Vector(npts);
-  auto gtilde_func = [&](double x){ return -tau_of_x_spline.deriv_x(x)*exp(-tau_of_x_spline(x)); };
+  auto gtilde_array = Vector(3*npts);
+  auto gtilde_func = [&](const double x){ return -dtau_func(x)*exp(-tau_of_x_spline(x)); };
   std::transform(x_array.begin(), x_array.end(), gtilde_array.begin(), gtilde_func);
 
   g_tilde_of_x_spline.create(x_array, gtilde_array, "g tilde of x spline");
+
+  sound_horizon_of_x_spline.create(x_array, s_array, "s of x spline");
 
   Utils::EndTiming("opticaldepth");
 }
@@ -346,20 +416,17 @@ double RecombinationHistory::tau_of_x(double x) const{
 double RecombinationHistory::dtaudx_of_x(double x) const{
 
   //=============================================================================
-  // TODO: Implement. Either from the tau-spline tau_of_x_spline.deriv_(x) or 
+  // Either from the tau-spline tau_of_x_spline.deriv_(x) or
   // from a separate spline if you choose to do this
   //=============================================================================
 
-  return tau_of_x_spline.deriv_x(x);
+  //return tau_of_x_spline.deriv_x(x);
+  return dtau_of_dx_spline(x);
 }
 
 double RecombinationHistory::ddtauddx_of_x(double x) const{
-
-  //=============================================================================
-  // TODO: Implement
-  //=============================================================================
-
-  return tau_of_x_spline.deriv_xx(x);
+  //return tau_of_x_spline.deriv_xx(x);
+  return dtau_of_dx_spline.deriv_x(x);
 }
 
 double RecombinationHistory::g_tilde_of_x(double x) const{
@@ -367,20 +434,10 @@ double RecombinationHistory::g_tilde_of_x(double x) const{
 }
 
 double RecombinationHistory::dgdx_tilde_of_x(double x) const{
-
-  //=============================================================================
-  // TODO: Implement
-  //=============================================================================
-
   return g_tilde_of_x_spline.deriv_x(x);
 }
 
 double RecombinationHistory::ddgddx_tilde_of_x(double x) const{
-
-  //=============================================================================
-  // TODO: Implement
-  //=============================================================================
-
   return g_tilde_of_x_spline.deriv_xx(x);
 }
 
@@ -390,6 +447,10 @@ double RecombinationHistory::Xe_of_x(double x) const{
 
 double RecombinationHistory::ne_of_x(double x) const{
   return exp(log_ne_of_x_spline(x));
+}
+
+double RecombinationHistory::sound_horizon_of_x(double x) const{
+  return sound_horizon_of_x_spline(x);
 }
 
 double RecombinationHistory::get_Yp() const{
@@ -404,8 +465,10 @@ void RecombinationHistory::info() const{
   std::cout << "Info about recombination/reionization history class:\n";
   std::cout << "Yp:          " << Yp          << "\n";
   std::cout << "Saha approx ended at iteration i=" << saha_regime_index << "\n";
+  std::cout << "With x = " << saha_regime_exit_x << "\n";
+  std::cout << "Tau today: " << tau_of_x(0) << "\n";
   std::cout << std::endl;
-} 
+}
 
 //====================================================
 // Output the data computed to file
@@ -424,7 +487,10 @@ void RecombinationHistory::output(const std::string& filename) const{
   fp << "dtau_dx"        << "; ";
   fp << "ddtau_ddx"      << "; ";
   fp << "g_tilde"        << "; ";
-  fp << "ddg_tilde_ddx";
+  fp << "dg_tilde_dx"    << "; ";
+  fp << "ddg_tilde_ddx" << "; ";
+  fp << "sound_horizon" << "; ";
+  fp << "t(x)";
   fp << "\n";
   auto print_data = [&] (const double x) {
     fp << x                    << "; ";
@@ -435,7 +501,9 @@ void RecombinationHistory::output(const std::string& filename) const{
     fp << ddtauddx_of_x(x)     << "; ";
     fp << g_tilde_of_x(x)      << "; ";
     fp << dgdx_tilde_of_x(x)   << "; ";
-    fp << ddgddx_tilde_of_x(x);
+    fp << ddgddx_tilde_of_x(x) << "; ";
+    fp << sound_horizon_of_x(x) << "; ";
+    fp << cosmo->t_of_x(x);
     fp << "\n";
   };
   std::for_each(x_array.begin(), x_array.end(), print_data);

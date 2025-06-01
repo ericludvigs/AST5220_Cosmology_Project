@@ -17,7 +17,7 @@
 \usepackage{natbib, twoopt} % a&a uses this
 \bibpunct{(}{)}{;}{a}{}{,} % to follow the A&A style
 %
-\usepackage{amsmath, mathtools} % standard for math
+\usepackage{amsmath, amssymb, mathtools} % standard for math
 %\usepackage{mathptmx} % change math font (?, might be doing nothing)
 \usepackage{siunitx} % SI units support
 \usepackage{graphicx} % make figures
@@ -92,7 +92,7 @@
 \begin{document} 
 
 
-   \title{Make a suitable title: my paper on the cosmic microwave background and formation of structures in our Universe}
+   \title{Understanding cosmological observables via numerical simulation of CMB anisotropies}
    \titlerunning{Cosmology II Project}
 
    \subtitle{AST5220: Cosmology II}
@@ -114,8 +114,8 @@
 \input{chapters/introduction}
 \input{chapters/milestone_1.tex}
 \input{chapters/milestone_2.tex}
-%\input{chapters/milestone_3.tex}
-%\input{chapters/milestone_4.tex}
+\input{chapters/milestone_3.tex}
+\input{chapters/milestone_4.tex}
 \input{chapters/conclusion}
 
 %-------------------------------------------------------------------
@@ -125,6 +125,7 @@
 %
 % - join the .bib files when you upload your source files
 
+\FloatBarrier
 \bibliographystyle{bibtex/aa_url}
 \bibliography{bibtex/bibliography.bib}
 

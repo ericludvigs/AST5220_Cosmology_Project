@@ -28,7 +28,8 @@ void PowerSpectrum::solve(){
   // TODO: Choose the range of k's and the resolution to compute Theta_ell(k)
   //=========================================================================
   Vector k_array;
-  Vector log_k_array = log(k_array);
+  //Vector log_k_array = log(k_array);
+  Vector log_k_array = exp(Utils::linspace(log(k_min), log(k_max), n_k));
 
   //=========================================================================
   // TODO: Make splines for j_ell. 

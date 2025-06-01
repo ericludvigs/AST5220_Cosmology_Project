@@ -1,11 +1,25 @@
 \section{Milestone IV}
-Some introduction about what it is all about.
+I got completely stuck on milestone III. I was looking forward to III and finally getting to some of the physics there, too
+
+Citations: \citet{fixsenCosmicMicrowaveBackground1996}
 
 \subsection{Theory}
-The theory behind this milestone.
+CMB and matter power spectrums, how they work and the different regimes in them. How a sum of coefficients describes the different scale components of a sky-map. Line of sight integration to calculate all the various $\Theta_\ell$-s.
 
-\subsection{Implementation details}
-Something about the numerical work.
+How the different regimes in the power spectrum plots are affected by different shifts in cosmological parameters. Cosmic variance in the beginning at low $\ell$-s. $A_s$ for overall amplitude of the whole spectrum, $n_s$ describes tilt. The fluctuation peaks after the main peak tell us about baryon and dark matter density. Also affected by polarization, neturinos, and reionization which is why the simpler power spectrum we would have derived would be off from the Planck spectrum in this regime, while the lower $\ell$-s match fine.
 
-\subsection{Results}
-Show and discuss the results.
+The matter power spectrum tells us about the total matter component in the universe, but the interesting part is the second small peak and subsequent dampened fluctuations that tell us about the ratio of baryons to dark matter, due to the effect of baryon dragging.
+
+The source function:
+
+\begin{equation}\label{eq:source_function}
+\begin{aligned}
+    \tilde{S}(k,x) = \tilde{g}\left[ \Theta_0 + \Psi + \frac{1}{4}\Pi\right] + e^{-\tau} \left[\Psi^\prime-\Phi^\prime\right] - \\
+    - \frac{1}{ck}\frac{d}{dx}(\mathcal{H}\tilde{g}v_b) + \frac{3}{4c^2k^2} \frac{d}{dx} \left[\mathcal{H}\frac{d}{dx} (\mathcal{H}\tilde{g}\Pi)\right].
+\end{aligned}
+\end{equation}
+
+This describes various effects in the universe that have affected photons travelling from the surface of last scattering (the CMB photons) to us, today. The baseline movement is in the first term (hence the dependency on visibility function). The term with $\psi$ dependence is a correction due to the Sachs-Wolfe effect, the term with $\Pi$ is a correction for the effect of the photon quadropole and some polarization. The next main term is a correction for the integrated Sachs-Wolfe effect (ISW), which should have one of those neat diagrams to show how photons gain energy due to gravitational wells decaying while they are climbing out. Next up is a correction for Doppler shift, and finally a correction for angular dependence in Thompson scattering.
+
+\subsection{Implementation details, results}
+It did not work

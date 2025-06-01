@@ -56,7 +56,7 @@ namespace Utils{
     if(xrange.first == 0.0 && xrange.second == 0.0)
       xrange = y.get_xrange();
 
-    // Arrange search ranghe so that x_low < x_high)
+    // Arrange search range so that x_low < x_high)
     double x_low   = std::min(xrange.first, xrange.second);
     double x_high  = std::max(xrange.first, xrange.second);
 
@@ -139,11 +139,22 @@ namespace Utils{
   // Useful function for generating a linspace
   std::vector<double> linspace(double xmin, double xmax, int num){
     std::vector<double> res(num);
-    double delta_x = (xmax-xmin)/double(num-1);
+    double delta_x = (xmax-xmin)/static_cast<double>(num - 1);
     for(int i = 0; i < num; i++){
       res[i] = xmin + delta_x * i;
     }
     res[num-1] = xmax; // Just to make sure its exactly xmax!
+    return res;
+  }
+
+  // same as above but base^points for log space
+  std::vector<double> logspace(double xmin, double xmax, int num, double base = 10.0){
+    std::vector<double> res(num);
+    double delta_x = (xmax-xmin)/static_cast<double>(num - 1);
+    for(int i = 0; i < num; i++){
+      res[i] = pow(base, (xmin + delta_x * i));
+    }
+    res[num-1] = pow(base, xmax); // Just to make sure its exactly base^xmax
     return res;
   }
 
@@ -203,7 +214,7 @@ std::vector<double> FUN(const std::vector<double>& x) { \
   std::vector<double> y(x.size()); \
   std::transform(x.begin(), x.end(), y.begin(), [](double t) { return FUN(t); } ); \
   return y; \
-} 
+}
 FUNS(exp); FUNS(log); FUNS(cos); FUNS(sin); FUNS(tan); FUNS(fabs); FUNS(atan)
 #undef FUNS
 std::vector<double> pow(const std::vector<double>& x, double n) {
