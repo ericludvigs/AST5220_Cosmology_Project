@@ -46,4 +46,6 @@ INC = -I/opt/homebrew/opt/gsl/include
 LIBS = -L/opt/homebrew/opt/gsl/lib -lgsl -lgslcblas
 ```
 
+# Command to make a zip file for delivery from the repository
+`git archive -o ast5220_2025_candidatenumber.zip HEAD`
 
